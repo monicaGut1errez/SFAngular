@@ -1,0 +1,54 @@
+<div>
+    <h1 mat-dialog-title>Datos Audiencia</h1>
+    <div mat-dialog-content>
+        <div style="display: flex;flex-direction: column; margin:1rem auto; max-width: 600px; padding: 1rem;">
+            <h2 mat-dialog-title>Expediente</h2>
+            
+            <div class="example-container">
+            <mat-form-field appearance="fill">
+                <mat-label>Tipo Expediente</mat-label>
+                <mat-select>
+                  <mat-option *ngFor="let tipoExpediente of tiposExpedientes" [value]="tipoExpediente.value">
+                    {{tipoExpediente.viewValue}}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+
+            <mat-form-field appearance="fill">
+                <input matInput type="text" placeholder="Número Expediente">
+            </mat-form-field>
+
+            <button mat-icon-button color="warn" aria-label="Example icon button with a home icon" (click)="nextStep()">
+                <mat-icon>search</mat-icon>
+            </button>
+
+            </div>
+
+            <mat-expansion-panel [expanded]="step === 1" (opened)="setStep(1)" hideToggle>
+                <div>
+                    <br>
+                    <label appearance="fill">Tipo de Audiencia </label>
+                <mat-form-field appearance="fill" class="example-full-width">
+                    <mat-label>Seleccione una opción</mat-label>
+                    <mat-select>
+                      <mat-option *ngFor="let audiencia of audiencias" [value]="audiencia.value">
+                        {{audiencia.viewValue}}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+                <div>
+                    <label appearance="fill">Observaciones </label>
+                    <mat-form-field appearance="fill" class="example-full-width">
+                        <textarea matInput></textarea>
+                    </mat-form-field>
+                </div>
+            </mat-expansion-panel>
+
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="cancelar()">Cancelar</button>
+        <button mat-button cdkFocusInitial>Aceptar</button>
+    </div>
+</div>
