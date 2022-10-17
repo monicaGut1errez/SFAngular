@@ -49,7 +49,11 @@ FullCalendarModule.registerPlugins([
     BrowserAnimationsModule,
     DemoMaterialModule,
     OverlayModule,
-    AppRoutingModule   
+    AppRoutingModule, 
+    //RouterModule
+    RouterModule.forRoot([
+      {path: 'Agenda', loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)},
+    ]),
   ],
   providers: [],
   bootstrap: [AppComponent],

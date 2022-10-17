@@ -1,9 +1,9 @@
-import { BrowserModule } from '@angular/platform-browser';
+//import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
 
 //import { AppRoutingModule } from './app-routing.module';
-//import { AgendaComponent } from './agenda.component';
+import { AgendaComponent } from './agenda.component';
  
 // import modules
 //import { HttpClientModule } from '@angular/common/http';
@@ -18,7 +18,7 @@ import scrollgridPlugin from '@fullcalendar/scrollgrid'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+//import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from 'src/app/demo-material-module';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
 //import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
@@ -41,15 +41,17 @@ FullCalendarModule.registerPlugins([
   exports: [
   ],
   declarations: [
+    AgendaComponent,
     AgendarComponent,
     //CustomTooltipColoresDirective,
   ],
   imports: [
-    BrowserModule,
+    //BrowserModule,
     FullCalendarModule,
-    BrowserAnimationsModule,
+    //BrowserAnimationsModule,
     DemoMaterialModule,
     OverlayModule,
+    RouterModule
     //RouterModule.forRoot(AppRoutingModule),
     //MatButtonModule,
     //HttpClientModule    
