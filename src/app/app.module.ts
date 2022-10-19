@@ -5,7 +5,7 @@ import { AppRoutingModule } from 'src/app/app-routing.module';
 import { AppComponent } from './app.component';
  
 // import modules
-//import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
  
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -54,6 +54,7 @@ FullCalendarModule.registerPlugins([
     RouterModule.forRoot([
       {path: 'Agenda', loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)},
     ]),
+    HttpClientModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

@@ -47,7 +47,6 @@ export class AgendaComponent {
 
   ngOnInit(): void {
   } */
-
   dataSource = ELEMENT_DATA;
 
   tooltipComponent = TooltipColoresComponent;
@@ -100,6 +99,10 @@ export class AgendaComponent {
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
       { id: '2', title: ' 2 ', eventBackgroundColor: 'rgb(135, 169, 107)'}
     ],
+    /* resources: {
+      url: '',
+      method: 'GET'
+    }, */
     events: [
       {
         id: '1',
@@ -252,7 +255,9 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(public dialog: MatDialog) { }
+    constructor(public dialog: MatDialog) {
+      this.inicializarAgendas();
+     }
 
     openDialog(): void {
       const dialogRef = this.dialog.open(AgendarComponent, {
@@ -260,5 +265,7 @@ export class AgendaComponent {
         //data: {name: this.name, animal: this.animal}
       });
     }
+
+    inicializarAgendas(): void {}
 
 }

@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { environment, ServerLocal } from './../environments/environment';
+
 /*import { HttpClient } from '@angular/common/http';
 import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent } from '@fullcalendar/angular';
 import { INITIAL_EVENTS,createEventId }  from './event-utils';
@@ -42,7 +44,12 @@ const ELEMENT_DATA: PeriodicElement[] = [
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
-export class AppComponent {}
+export class AppComponent {
+  constructor() {
+    console.log(environment.production); // Logs false for default environment
+  }
+title = "SIGOFAM";
+}
 
   /*dataSource = ELEMENT_DATA;
 

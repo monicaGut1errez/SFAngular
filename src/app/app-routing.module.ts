@@ -3,12 +3,15 @@ import { RouterModule, Routes } from '@angular/router';
 
 import { AgendaModule } from './components/agenda/agenda.module';
 
-//import { AgendaComponent } from './components/agenda/agenda.component'
-
 const routes: Routes = [
   { 
     path: 'Agenda',
     loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)
+  },
+  {
+    path: 'Agenda',
+    redirectTo: '',
+    pathMatch: 'full'
   }
 ];
 

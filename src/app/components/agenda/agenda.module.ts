@@ -1,9 +1,11 @@
-//import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { AgendaRoutingModule } from './agenda.routing';
+import { AgendaComponent } from './agenda.component';
+
 import { RouterModule } from '@angular/router';
 
 //import { AppRoutingModule } from './app-routing.module';
-import { AgendaComponent } from './agenda.component';
  
 // import modules
 //import { HttpClientModule } from '@angular/common/http';
@@ -21,11 +23,10 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 //import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from 'src/app/demo-material-module';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
-//import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
+import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
 //import { CustomTooltipColoresDirective } from 'src/app/directives/custom-tooltip-colores.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
-
 
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
@@ -43,15 +44,18 @@ FullCalendarModule.registerPlugins([
   declarations: [
     AgendaComponent,
     AgendarComponent,
+    TooltipColoresComponent
     //CustomTooltipColoresDirective,
   ],
   imports: [
+    CommonModule, 
+    AgendaRoutingModule,
     //BrowserModule,
     FullCalendarModule,
     //BrowserAnimationsModule,
     DemoMaterialModule,
     OverlayModule,
-    RouterModule
+    RouterModule,
     //RouterModule.forRoot(AppRoutingModule),
     //MatButtonModule,
     //HttpClientModule    
