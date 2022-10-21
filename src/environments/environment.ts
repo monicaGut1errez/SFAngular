@@ -6,7 +6,7 @@ export const environment = {
   production: false
 };
 
-export const ServerLocal = 'https://localhost:7036/api/';
+export const ServerLocal = 'https://localhost:7036';
 
 /*
  * For easier debugging in development mode, you can import the following file

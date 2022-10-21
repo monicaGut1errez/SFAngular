@@ -11,6 +11,9 @@ import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tool
 
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
 
+//Services 
+import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
+
 interface TipoAgenda {
   value: string;
   viewValue: string;
@@ -255,8 +258,8 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(public dialog: MatDialog) {
-      this.inicializarAgendas();
+    constructor(public dialog: MatDialog, private service: AgendaService) {
+      this.inicializarAgenda();
      }
 
     openDialog(): void {
@@ -266,6 +269,8 @@ export class AgendaComponent {
       });
     }
 
-    inicializarAgendas(): void {}
+    inicializarAgenda(): void {
+      
+    }
 
 }

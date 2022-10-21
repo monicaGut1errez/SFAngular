@@ -26,6 +26,9 @@ import { DemoMaterialModule } from './demo-material-module';
 import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
 
+//Services
+import { AgendaService } from '././services/agenda/agenda.service'
+
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
   timeGridPlugin,
@@ -56,7 +59,7 @@ FullCalendarModule.registerPlugins([
     ]),
     HttpClientModule,
   ],
-  providers: [],
+  providers: [AgendaService],
   bootstrap: [AppComponent],
   
 })
