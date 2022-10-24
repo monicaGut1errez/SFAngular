@@ -50,6 +50,7 @@ export class AgendaComponent {
 
   ngOnInit(): void {
   } */
+
   dataSource = ELEMENT_DATA;
 
   tooltipComponent = TooltipColoresComponent;
@@ -258,9 +259,17 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(public dialog: MatDialog, private service: AgendaService) {
+    constructor(public dialog: MatDialog, private agendaService: AgendaService) {
       this.inicializarAgenda();
      }
+
+     ngOnInit() {
+      const centroTrabajo = "142190401";
+      const fechaInicio = "2022-01-01T15:11:34.254Z";
+      const fechaFin= "2022-10-24T15:11:34.254Z";
+      //this.service.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
+      this.agendaService.getUsers();
+    }
 
     openDialog(): void {
       const dialogRef = this.dialog.open(AgendarComponent, {
@@ -270,6 +279,10 @@ export class AgendaComponent {
     }
 
     inicializarAgenda(): void {
+      const centroTrabajo = "142190401";
+      const fechaInicio = "2022-01-01T15:11:34.254Z";
+      const fechaFin= "2022-10-24T15:11:34.254Z";
+      this.agendaService.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
       
     }
 
