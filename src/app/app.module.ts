@@ -27,7 +27,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
 
 //Services
-import { AgendaService } from '././services/agenda/agenda.service'
+import { AgendaService } from '././services/agenda/agenda.service';
+//import { DatosAudienciaComponent } from './components/datos-audiencia/datos-audiencia.component';
 
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
@@ -44,6 +45,7 @@ FullCalendarModule.registerPlugins([
   ],
   declarations: [
     AppComponent,
+    //DatosAudienciaComponent,
     //CustomTooltipColoresDirective,
   ],
   imports: [

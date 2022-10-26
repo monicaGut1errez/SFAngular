@@ -27,6 +27,8 @@ import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tool
 //import { CustomTooltipColoresDirective } from 'src/app/directives/custom-tooltip-colores.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
+import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
+
 
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
@@ -44,7 +46,8 @@ FullCalendarModule.registerPlugins([
   declarations: [
     AgendaComponent,
     AgendarComponent,
-    TooltipColoresComponent
+    TooltipColoresComponent,
+    DatosAudienciaComponent
     //CustomTooltipColoresDirective,
   ],
   imports: [

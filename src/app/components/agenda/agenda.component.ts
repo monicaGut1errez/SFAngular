@@ -7,9 +7,12 @@ import { ThisReceiver } from '@angular/compiler';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatTableDataSource } from '@angular/material/table';
-import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
+import { TooltipComponent } from '@angular/material/tooltip';
 
+
+import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
+import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component'
 
 //Services 
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
@@ -98,6 +101,8 @@ export class AgendaComponent {
     select: this.handleDateSelect.bind(this),
     eventClick: this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
+    eventMouseEnter: this.openToolTipInfo.bind(this), 
+    //eventRender: function(){},
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
     resources: [
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
@@ -111,9 +116,9 @@ export class AgendaComponent {
       {
         id: '1',
         resourceId: '1',
-        start: '2022-09-29 10:00:00',
-        end: '2022-09-29 12:00:00',
-        title: 'Prueba1'
+        start: '2022-10-25 10:00:00',
+        end: '2022-10-25 12:00:00',
+        title: 'Prueba1', 
       }, {
         id: '2',
         resourceId: '2',
@@ -172,7 +177,6 @@ export class AgendaComponent {
       endTime: '15:00',
     },
     height: 'auto',
-    
   };
 
   currentEvents: EventApi[] = [];
@@ -203,7 +207,7 @@ export class AgendaComponent {
   handleEvents(events: EventApi[]) {
     this.currentEvents = events;
   }
-  
+
   prev(){
 
   }
@@ -259,17 +263,9 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(public dialog: MatDialog, private agendaService: AgendaService) {
-      this.inicializarAgenda();
+    constructor(private agendaService: AgendaService, public dialog: MatDialog) {
+      //this.inicializarAgenda();
      }
-
-     ngOnInit() {
-      const centroTrabajo = "142190401";
-      const fechaInicio = "2022-01-01T15:11:34.254Z";
-      const fechaFin= "2022-10-24T15:11:34.254Z";
-      //this.service.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
-      this.agendaService.getUsers();
-    }
 
     openDialog(): void {
       const dialogRef = this.dialog.open(AgendarComponent, {
@@ -278,12 +274,26 @@ export class AgendaComponent {
       });
     }
 
-    inicializarAgenda(): void {
+    openToolTipInfo(clickInfo: EventClickArg): void {
+      const dialogRef = this.dialog.open(DatosAudienciaComponent, {width: '550px'});
+      //alert(clickInfo.event.title)
+      console.log(clickInfo.event.title)
+    }
+
+    ngOnInit() {
       const centroTrabajo = "142190401";
       const fechaInicio = "2022-01-01T15:11:34.254Z";
       const fechaFin= "2022-10-24T15:11:34.254Z";
-      this.agendaService.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
-      
+      //this.service.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
+      //this.agendaService.getUsers();
     }
 
+    inicializarAgenda(): void {
+      /*const centroTrabajo = "142190401";
+      const fechaInicio = "2022-01-01T15:11:34.254Z";
+      const fechaFin= "2022-10-24T15:11:34.254Z";*/
+      this.agendaService.ConsultarFechasInhabiles(/*centroTrabajo, fechaInicio, fechaFin*/);
+    }
+
+    
 }

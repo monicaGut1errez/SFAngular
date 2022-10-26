@@ -64,7 +64,7 @@ export class AgendaService {
 
   }
 
-  ConsultarFechasInhabiles(centroTrabajo: string, fechaInicio: string, fechaFin: string ){
+  ConsultarFechasInhabiles(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){
     this.http.get(ServerLocal + this.strApi +'/ConsultarFechasInhabiles/', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
       console.log(data);
     });
