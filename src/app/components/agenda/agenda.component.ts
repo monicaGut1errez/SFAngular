@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent } from '@fullcalendar/angular';
+import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent, CalendarApi } from '@fullcalendar/angular';
 import { INITIAL_EVENTS,createEventId }  from 'src/app/event-utils';
 import esLocale from '@fullcalendar/core/locales/es';
 import { ThisReceiver } from '@angular/compiler';
@@ -16,6 +16,7 @@ import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/dato
 
 //Services 
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
+import { takeUntil } from 'rxjs';
 
 interface TipoAgenda {
   value: string;
@@ -48,6 +49,11 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./agenda.component.css']
 })
 export class AgendaComponent {
+
+  detalleAudiencia: any;
+  tiposSalas: any;
+  id: any;
+  title: any; 
 
   /* constructor() { }
 
@@ -104,6 +110,7 @@ export class AgendaComponent {
     eventMouseEnter: this.openToolTipInfo.bind(this), 
     //eventRender: function(){},
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+    //resources: [{}],
     resources: [
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
       { id: '2', title: ' 2 ', eventBackgroundColor: 'rgb(135, 169, 107)'}
@@ -112,7 +119,8 @@ export class AgendaComponent {
       url: '',
       method: 'GET'
     }, */
-    events: [
+    //events:'',
+   events: [
       {
         id: '1',
         resourceId: '1',
@@ -122,8 +130,8 @@ export class AgendaComponent {
       }, {
         id: '2',
         resourceId: '2',
-        start: '2022-09-29 11:00:00',
-        end: '2022-09-29 14:30:00',
+        start: '2022-10-28 11:00:00',
+        end: '2022-10-28 14:30:00',
         title: 'Prueba2'
       }, {
         id: '3',
@@ -132,7 +140,7 @@ export class AgendaComponent {
         end: '2022-10-03 12:00:00',
         title: 'Prueba3'
       }
-    ],
+    ], 
     customButtons: {
       custom1: {
         text: 'SALIR',
@@ -208,8 +216,7 @@ export class AgendaComponent {
     this.currentEvents = events;
   }
 
-  prev(){
-
+  prev( ){
   }
 
   /* nextMonth(): void {
@@ -217,8 +224,8 @@ export class AgendaComponent {
     this.calendarApi = this.calendarComponent.getApi();
     this.calendarApi.next();
 } */
-  next() : void{
-    //this.calendarOptions.next();
+  next(){
+
   }
   imprimir(){
     
@@ -263,8 +270,9 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(private agendaService: AgendaService, public dialog: MatDialog) {
+    constructor(public agendaService: AgendaService, public dialog: MatDialog) {
       //this.inicializarAgenda();
+      this.loadResource(); 
      }
 
     openDialog(): void {
@@ -275,9 +283,22 @@ export class AgendaComponent {
     }
 
     openToolTipInfo(clickInfo: EventClickArg): void {
+      /* this.agendaService.ConsultarDetalleAudiencia().subscribe(data => {
+        this.detalleAudiencia = data;
+        console.log(this.detalleAudiencia);
+      }); */
+      //this.agendaService.ConsultarDetalleAudiencia()
       const dialogRef = this.dialog.open(DatosAudienciaComponent, {width: '550px'});
       //alert(clickInfo.event.title)
+      clickInfo.event.backgroundColor
       console.log(clickInfo.event.title)
+    }
+
+    loadResource(): void {
+      this.agendaService.ConsultarTiposSalas().subscribe(data => {
+        this.tiposSalas = data;
+        console.log(this.tiposSalas);
+      })
     }
 
     ngOnInit() {

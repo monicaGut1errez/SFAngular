@@ -17,6 +17,8 @@ const HTTPOPTIONS = {
 export class AgendaService {
 
   strApi = '/api/Agenda';
+  strApiAudiencia = '/api/Audiencia';
+
   constructor(private http: HttpClient) { }
 
   getUsers() {
@@ -40,8 +42,8 @@ export class AgendaService {
 
   }
 
-  ConsultarTiposSalas(){
-
+  ConsultarTiposSalas(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarTiposSalas',HTTPOPTIONS);
   }
 
   ConsultarAuxiliaresAudienciaLibres(){
@@ -68,6 +70,16 @@ export class AgendaService {
     this.http.get(ServerLocal + this.strApi +'/ConsultarFechasInhabiles/', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
       console.log(data);
     });
+  }
+
+  ConsultarDetalleAudienciaPrueba(){
+    this.http.get(ServerLocal + this.strApiAudiencia +'/ConsultarDetalleAudiencia', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
+      console.log(data);
+    });
+  }
+
+  ConsultarDetalleAudiencia(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiAudiencia +'/ConsultarDetalleAudiencia', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS);
   }
 
 

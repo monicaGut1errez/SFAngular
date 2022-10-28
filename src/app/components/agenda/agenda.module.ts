@@ -24,10 +24,11 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { DemoMaterialModule } from 'src/app/demo-material-module';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
 import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
-//import { CustomTooltipColoresDirective } from 'src/app/directives/custom-tooltip-colores.directive';
+import { CustomTooltipColoresDirective } from 'src/app/directives/custom-tooltip-colores.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
 import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
+
 
 
 FullCalendarModule.registerPlugins([ 
@@ -47,8 +48,8 @@ FullCalendarModule.registerPlugins([
     AgendaComponent,
     AgendarComponent,
     TooltipColoresComponent,
-    DatosAudienciaComponent
-    //CustomTooltipColoresDirective,
+    DatosAudienciaComponent,
+    CustomTooltipColoresDirective,
   ],
   imports: [
     CommonModule, 

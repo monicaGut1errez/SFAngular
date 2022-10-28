@@ -1,20 +1,42 @@
-<div>
-    <div mat-dialog-content>
-        <div style="display: flex;flex-direction: column; margin:1rem auto; max-width: 600px; padding: 1rem;">            
-            <div class="example-container">
-                <table mat-table class="mat-elevation-z8">
-                    <!-- Expediente Column -->
-                    <ng-container matColumnDef="expediente">
-                        <th mat-header-cell> Expediente: </th>
-                        <td mat-cell > </td>
-                      </ng-container>
-                </table>
-            </div>
-
-        </div>
-    </div>
-    <div mat-dialog-actions align="end">
-        <button mat-button (click)="cancelar()">Cancelar</button>
-        <button mat-button cdkFocusInitial>Aceptar</button>
-    </div>
-</div>
+<table class="mat-elevation-z8">
+    <tr>
+      <th>Expediente: </th>
+      <td>{{ detalleAudiencia.tipoExpedienteDescripcion | uppercase }} {{ detalleAudiencia.numeroExpediente | uppercase}}</td>
+    </tr>
+    <tr>
+      <th>Tipo Audiencia: </th>
+      <td>{{ detalleAudiencia.descripcionTipoAudiencia | uppercase }}</td>
+    </tr>
+    <tr>
+      <th>Tipo de Juicio: </th>
+      <td>{{ detalleAudiencia.descripcionJuicio | uppercase }}</td>
+    </tr>
+    <tr>
+        <th>Inicio: </th>
+        <td>{{ detalleAudiencia.fechaInicio  | uppercase }}</td>
+    </tr>
+    <tr>
+        <th>Fin: </th>
+        <td>{{ detalleAudiencia.fechaFinal | uppercase }}</td>
+      </tr>
+    <tr>
+        <th>Juzgado: </th>
+        <td>{{ detalleAudiencia.nombreJuzgado | uppercase }}</td>
+    </tr>
+    <tr>
+      <th>Sala: </th>
+      <td>SALA {{ detalleAudiencia.salaNombre | uppercase }} </td>
+    </tr>
+    <tr>
+        <th>Juez: </th>
+        <td>{{ detalleAudiencia.juez | uppercase }}</td>
+    </tr>
+    <tr>
+        <th>Auxiliar: </th>
+        <td>{{ detalleAudiencia.auxiliarAudiencia | uppercase }}</td>
+    </tr>
+    <tr>
+        <th>Observaciones: </th>
+        <td>{{ detalleAudiencia.resumenAudiencia | uppercase}}</td>
+     </tr>
+</table>
