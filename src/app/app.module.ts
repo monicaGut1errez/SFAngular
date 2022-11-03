@@ -24,10 +24,12 @@ import { DemoMaterialModule } from './demo-material-module';
 //import { TooltipColoresComponent } from './components/tooltip-colores/tooltip-colores.component';
 //import { CustomTooltipColoresDirective } from './directives/custom-tooltip-colores.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
-//import {MatButtonModule} from '@angular/material/button'; 
+//import {MatButtonModule} from '@angular/material/button';
+import {MAT_DATE_LOCALE} from '@angular/material/core';
 
 //Services
 import { AgendaService } from '././services/agenda/agenda.service';
+import { ImprimirReporteComponent } from './components/imprimir-reporte/imprimir-reporte.component';
 //import { DatosAudienciaComponent } from './components/datos-audiencia/datos-audiencia.component';
 
 FullCalendarModule.registerPlugins([ 
@@ -45,6 +47,7 @@ FullCalendarModule.registerPlugins([
   ],
   declarations: [
     AppComponent,
+    ImprimirReporteComponent,
     //DatosAudienciaComponent,
     //CustomTooltipColoresDirective,
   ],
@@ -61,7 +64,7 @@ FullCalendarModule.registerPlugins([
     ]),
     HttpClientModule,
   ],
-  providers: [AgendaService],
+  providers: [AgendaService, {provide: MAT_DATE_LOCALE, useValue: 'es'}],
   bootstrap: [AppComponent],
   
 })

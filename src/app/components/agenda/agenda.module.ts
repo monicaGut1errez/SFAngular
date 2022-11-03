@@ -29,6 +29,8 @@ import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button'; 
 import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
 
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 
 
 FullCalendarModule.registerPlugins([ 
@@ -60,6 +62,8 @@ FullCalendarModule.registerPlugins([
     DemoMaterialModule,
     OverlayModule,
     RouterModule,
+    FormsModule,
+    ReactiveFormsModule
     //RouterModule.forRoot(AppRoutingModule),
     //MatButtonModule,
     //HttpClientModule    

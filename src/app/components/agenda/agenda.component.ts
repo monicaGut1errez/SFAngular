@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent, CalendarApi } from '@fullcalendar/angular';
 import { INITIAL_EVENTS,createEventId }  from 'src/app/event-utils';
@@ -8,11 +8,13 @@ import { MatDialog } from '@angular/material/dialog';
 import { MatTable } from '@angular/material/table';
 import { MatTableDataSource } from '@angular/material/table';
 import { TooltipComponent } from '@angular/material/tooltip';
+import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
 
 
 import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
-import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component'
+import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
+import { ImprimirReporteComponent } from '../imprimir-reporte/imprimir-reporte.component';
 
 //Services 
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
@@ -46,9 +48,15 @@ const ELEMENT_DATA: PeriodicElement[] = [
 @Component({
   selector: 'app-agenda',
   templateUrl: './agenda.component.html',
-  styleUrls: ['./agenda.component.css']
+  styleUrls: ['./agenda.component.css'],
 })
 export class AgendaComponent {
+
+  // references the #calendar in the template
+  @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
+
+  date = new FormControl(new Date());
+  serializedDate = new FormControl(new Date().toISOString());
 
   detalleAudiencia: any;
   tiposSalas: any;
@@ -216,19 +224,23 @@ export class AgendaComponent {
     this.currentEvents = events;
   }
 
-  prev( ){
+  prev(){
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.prev();
   }
-
-  /* nextMonth(): void {
-    console.warn('nextMonth');
-    this.calendarApi = this.calendarComponent.getApi();
-    this.calendarApi.next();
-} */
   next(){
-
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.next();
+  }
+  gotoDate(date: any){
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.gotoDate( date.value );
   }
   imprimir(){
-    
+    const dialogRef = this.dialog.open(ImprimirReporteComponent, {
+      width: '550px',
+      //data: {name: this.name, animal: this.animal}
+    });  
   }
   agendar(){
     alert('hola!');
@@ -272,7 +284,7 @@ export class AgendaComponent {
     }  */
     constructor(public agendaService: AgendaService, public dialog: MatDialog) {
       //this.inicializarAgenda();
-      this.loadResource(); 
+      //this.loadResource(); 
      }
 
     openDialog(): void {
@@ -295,7 +307,7 @@ export class AgendaComponent {
     }
 
     loadResource(): void {
-      this.agendaService.ConsultarTiposSalas().subscribe(data => {
+        this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
         console.log(this.tiposSalas);
       })

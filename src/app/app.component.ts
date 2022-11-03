@@ -45,6 +45,7 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  
   constructor() {
     console.log(environment.production); // Logs false for default environment
   }

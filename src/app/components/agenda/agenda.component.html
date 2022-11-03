@@ -2,13 +2,6 @@
 <mat-toolbar>
     <button mat-raised-button>SALIR</button>
 
-    <!-- <button mat-raised-button
-        matTooltip= ""
-        matTooltipPosition="below"
-        >
-        CÓDIGO COLORES
-    </button> -->
-
    <mat-form-field appearance="outline">
         <mat-chip-list class="chip-list">
             <mat-chip selected [customTooltip]="tooltipComponent" color="secondary">
@@ -33,16 +26,16 @@
 
     <button mat-raised-button (click)="next()">ADELANTE</button>
 
-    <button mat-raised-button>BUSCAR</button>
+    <button mat-raised-button (click)="gotoDate(date)">BUSCAR</button>
 
     <mat-form-field appearance="fill">
-        <input matInput [matDatepicker]="picker">
+        <input matInput [matDatepicker]="picker" [formControl]="date">
         <mat-hint>DD/MM/YYYY</mat-hint>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
-    </mat-form-field>
+    </mat-form-field>  
 
-    <button mat-raised-button>IMPRIMIR</button>
+    <button mat-raised-button (click)="imprimir()">IMPRIMIR</button>
 </mat-toolbar>
 <div>
 <!--       <div class="header" >
@@ -123,7 +116,7 @@
       </div> -->
 </div>
 <div id='calendar'>
-    <full-calendar
+    <full-calendar #calendar
     [options]='calendarOptions'
 ></full-calendar>
 </div>
