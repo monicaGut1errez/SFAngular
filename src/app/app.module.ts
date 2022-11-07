@@ -26,6 +26,8 @@ import { DemoMaterialModule } from './demo-material-module';
 import { OverlayModule } from '@angular/cdk/overlay';
 //import {MatButtonModule} from '@angular/material/button';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+
 
 //Services
 import { AgendaService } from '././services/agenda/agenda.service';
@@ -63,6 +65,8 @@ FullCalendarModule.registerPlugins([
       {path: 'Agenda', loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)},
     ]),
     HttpClientModule,
+    FormsModule, 
+    ReactiveFormsModule
   ],
   providers: [AgendaService, {provide: MAT_DATE_LOCALE, useValue: 'es'}],
   bootstrap: [AppComponent],

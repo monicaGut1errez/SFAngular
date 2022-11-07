@@ -47,23 +47,23 @@ export class AgendaService {
   }
 
   ConsultarAuxiliaresAudienciaLibres(){
-
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', HTTPOPTIONS);
   }
 
   ConsultarAgendaJueces(){
-
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaJueces', HTTPOPTIONS);
   }
 
   ConsultarAgendaSecretariosAcuerdos(){
-
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaSecretariosAcuerdos', HTTPOPTIONS);
   }
 
   ConsultarAgendaAuxiliaresAudiencia(){
-
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaAuxiliaresAudiencia', HTTPOPTIONS);
   }
 
   ConsultarAgendaAtencionApoyo(){
-
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaAtencionApoyo', HTTPOPTIONS);
   }
 
   ConsultarFechasInhabiles(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){

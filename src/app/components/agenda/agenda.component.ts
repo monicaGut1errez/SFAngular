@@ -19,6 +19,7 @@ import { ImprimirReporteComponent } from '../imprimir-reporte/imprimir-reporte.c
 //Services 
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
 import { takeUntil } from 'rxjs';
+import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 
 interface TipoAgenda {
   value: string;
@@ -62,6 +63,7 @@ export class AgendaComponent {
   tiposSalas: any;
   id: any;
   title: any; 
+  eventos: any; 
 
   /* constructor() { }
 
@@ -118,7 +120,6 @@ export class AgendaComponent {
     eventMouseEnter: this.openToolTipInfo.bind(this), 
     //eventRender: function(){},
     schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    //resources: [{}],
     resources: [
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
       { id: '2', title: ' 2 ', eventBackgroundColor: 'rgb(135, 169, 107)'}
@@ -187,11 +188,16 @@ export class AgendaComponent {
       }
     },
     dayMinWidth: 150,
-    businessHours: {
+    /* businessHours: {
       daysOfWeek: [1, 2, 3, 4, 5, 6, 7],
       startTime: '07:00',
       endTime: '15:00',
+    }, */
+    businessHours: {
+      startTime: '07:00',
+      endTime: '15:00',
     },
+
     height: 'auto',
   };
 
@@ -283,8 +289,8 @@ export class AgendaComponent {
          
     }  */
     constructor(public agendaService: AgendaService, public dialog: MatDialog) {
-      //this.inicializarAgenda();
-      //this.loadResource(); 
+      this.inicializarAgenda();
+      this.loadResource(); 
      }
 
     openDialog(): void {
@@ -326,6 +332,27 @@ export class AgendaComponent {
       const fechaInicio = "2022-01-01T15:11:34.254Z";
       const fechaFin= "2022-10-24T15:11:34.254Z";*/
       this.agendaService.ConsultarFechasInhabiles(/*centroTrabajo, fechaInicio, fechaFin*/);
+      this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      });
+      this.agendaService.ConsultarAgendaAuxiliaresAudiencia().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarAgendaSecretariosAcuerdos().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarAgendaJueces().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarAuxiliaresAudienciaLibres().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+
     }
 
     
