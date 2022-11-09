@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ServerLocal } from 'src/environments/environment'
 import { DateSelectionModelChange } from '@angular/material/datepicker';
+import { SELECT_ITEM_HEIGHT_EM } from '@angular/material/select/select';
 
 const HTTPOPTIONS = {
   headers: new HttpHeaders({
@@ -18,6 +19,8 @@ export class AgendaService {
 
   strApi = '/api/Agenda';
   strApiAudiencia = '/api/Audiencia';
+  strApiConciliador = '/api/AgendaConciliador'; 
+  strApiExpediente = '/api/Expediente';
 
   constructor(private http: HttpClient) { }
 
@@ -27,19 +30,19 @@ export class AgendaService {
     });}
   
   ConsultarAgendaConciliadores(){
-    
+    return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarAgendaConciliadores', HTTPOPTIONS);
   }
 
   ConsultarAgendaConciliadoresSecretario(){
-
+    return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarAgendaConciliadoresSecretario', HTTPOPTIONS);
   }
 
   ConsultarConciliadoresLibres(){
-
+    return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarConciliadoresLibres', HTTPOPTIONS);
   }
 
   ConsultarTiposSalasConciliador(){
-
+    return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarTiposSalasConciliador',HTTPOPTIONS);
   }
 
   ConsultarTiposSalas(): Observable<any>{
@@ -78,9 +81,29 @@ export class AgendaService {
     });
   }
 
+  //Audiencia API 
   ConsultarDetalleAudiencia(): Observable<any>{
     return this.http.get(ServerLocal + this.strApiAudiencia +'/ConsultarDetalleAudiencia', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS);
   }
 
+  ConsultarDetalleAudienciaSalaJuez(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiAudiencia +'/ConsultarDetalleAudienciaSalaJuez', HTTPOPTIONS);
+  }
+
+  ConsultarDetalleAudienciaSalaSecretario(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiAudiencia + '/ConsultarDetalleAudienciaSalaSecretario', HTTPOPTIONS);
+  }
+
+  ConsultarDetalleAudienciaSalaAuxiliar(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiAudiencia + '/ConsultarDetalleAudienciaSalaAuxiliar', HTTPOPTIONS);
+  }
+
+  ConsultarDetalleAudienciaSalaAtencionApoyo(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiAudiencia + '/ConsultarDetalleAudienciaSalaAtencionApoyo', HTTPOPTIONS);
+  }
+
+  ConsultarIndiceExpediente(): Observable<any>{
+    return this.http.get(ServerLocal + this.strApiExpediente + '/ConsultarIndiceExpediente', HTTPOPTIONS);
+  }
 
 }

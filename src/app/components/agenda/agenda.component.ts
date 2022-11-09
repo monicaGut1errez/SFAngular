@@ -20,6 +20,7 @@ import { ImprimirReporteComponent } from '../imprimir-reporte/imprimir-reporte.c
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
 import { takeUntil } from 'rxjs';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 interface TipoAgenda {
   value: string;
@@ -61,7 +62,7 @@ export class AgendaComponent {
 
   detalleAudiencia: any;
   tiposSalas: any;
-  id: any;
+  id : any; 
   title: any; 
   eventos: any; 
 
@@ -119,13 +120,16 @@ export class AgendaComponent {
     eventsSet: this.handleEvents.bind(this),
     eventMouseEnter: this.openToolTipInfo.bind(this), 
     //eventRender: function(){},
-    schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
-    resources: [
+    //schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
+    schedulerLicenseKey: '0720429164-fcs-1668012642',
+    resources: this.getResources(),
+
+    /* resources: [
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
       { id: '2', title: ' 2 ', eventBackgroundColor: 'rgb(135, 169, 107)'}
-    ],
+    ], */
     /* resources: {
-      url: '',
+      url: 'https://localhost:7036/api/Agenda/ConsultarTiposSalas',
       method: 'GET'
     }, */
     //events:'',
@@ -289,8 +293,8 @@ export class AgendaComponent {
          
     }  */
     constructor(public agendaService: AgendaService, public dialog: MatDialog) {
-      this.inicializarAgenda();
-      this.loadResource(); 
+      //this.inicializarAgenda();
+      //this.loadResource(); 
      }
 
     openDialog(): void {
@@ -315,8 +319,30 @@ export class AgendaComponent {
     loadResource(): void {
         this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
+        //this.id = this.tiposSalas.idSala;
         console.log(this.tiposSalas);
       })
+      
+    }
+
+    getResources(): any[] {
+
+      this.agendaService.ConsultarTiposSalas().subscribe(data => {
+        this.tiposSalas = data;
+        console.log(this.tiposSalas);
+
+      })
+
+      return [
+        {
+          id: "1",
+          title: "1"
+        },
+        {
+          id: "2",
+          title: "2"
+        }
+      ];
     }
 
     ngOnInit() {
@@ -331,7 +357,7 @@ export class AgendaComponent {
       /*const centroTrabajo = "142190401";
       const fechaInicio = "2022-01-01T15:11:34.254Z";
       const fechaFin= "2022-10-24T15:11:34.254Z";*/
-      this.agendaService.ConsultarFechasInhabiles(/*centroTrabajo, fechaInicio, fechaFin*/);
+      this.agendaService.ConsultarFechasInhabiles();
       this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
         this.eventos = data; 
         console.log(this.eventos);
@@ -352,7 +378,42 @@ export class AgendaComponent {
         this.eventos = data; 
         console.log(this.eventos);
       })
-
+      this.agendaService.ConsultarTiposSalasConciliador().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarConciliadoresLibres().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarAgendaConciliadoresSecretario().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarAgendaConciliadores().subscribe( data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarDetalleAudienciaSalaJuez().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarDetalleAudienciaSalaSecretario().subscribe( data => {
+        this.eventos = data;
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarDetalleAudienciaSalaAuxiliar().subscribe( data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarDetalleAudienciaSalaAtencionApoyo().subscribe( data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
+      this.agendaService.ConsultarIndiceExpediente().subscribe(data => {
+        this.eventos = data; 
+        console.log(this.eventos);
+      })
     }
 
     
