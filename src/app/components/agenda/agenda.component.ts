@@ -22,6 +22,9 @@ import { takeUntil } from 'rxjs';
 import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
+//Models 
+import { TipoSala } from 'src/app/Models/models';
+
 interface TipoAgenda {
   value: string;
   viewValue: string;
@@ -65,7 +68,7 @@ export class AgendaComponent {
   id : any; 
   title: any; 
   eventos: any; 
-
+  TiposSalasArray: TipoSala[];
   /* constructor() { }
 
   ngOnInit(): void {
@@ -319,6 +322,7 @@ export class AgendaComponent {
     loadResource(): void {
         this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
+        this.getResources();
         //this.id = this.tiposSalas.idSala;
         console.log(this.tiposSalas);
       })
@@ -329,20 +333,77 @@ export class AgendaComponent {
 
       this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
-        console.log(this.tiposSalas);
+        //console.log(this.tiposSalas);
 
+        this.tiposSalas.forEach(element  => {
+          this.TiposSalasArray.push(
+            
+          )
+          /* this.TiposSalasArray.push({
+            IdSala: element.idSala,
+            SalaNombre: element.salaNombre
+          }) */
+        });
+        //return this.tiposSalas;
       })
+      /*this.agendaService.ConsultarTiposSalas().subscribe(data => {
+        this.tiposSalas = data;
+        this.tiposSalas = data;
+        //console.log(this.tiposSalas) 
+          for (let tipoSala of this.tiposSalas){
+            this.id = tipoSala.idSala; 
+            this.title = tipoSala.salaNombre;
+            console.log(this.id, this.title); 
 
+            return 
+
+          } 
+        })*/
+      //this.title = "2";
+      //console.log(this.title);
+      /* this.agendaService.ConsultarTiposSalas().subscribe(data => {
+      this.tiposSalas = data;
+      console.log(this.tiposSalas) */
+        /* for (let tipoSala of this.tiposSalas){
+          this.id = tipoSala.idSala; 
+          this.title = tipoSala.salaNombre;
+          console.log(this.id, this.title); 
+        }  */
+      //})
+      /* for (let tipoSala of this.tiposSalas){
+        return[{
+          id: tipoSala.idSala, 
+          title: tipoSala.salaNombre
+        }];
+      } */
+      //return tipoSala;
       return [
+        
         {
+          /* id: this.agendaService.ConsultarTiposSalas().subscribe(data => {
+            this.tiposSalas = data;
+            for (let tipoSala of this.tiposSalas){
+              this.id = tipoSala.idSala; 
+              //console.log(this.id);
+              return this.id; 
+            }
+          }),  */
+          
           id: "1",
-          title: "1"
+          /* title: this.agendaService.ConsultarTiposSalas().subscribe(data => {
+            this.tiposSalas = data;
+            for (let tipoSala of this.tiposSalas){
+              this.title = tipoSala.salaNombre; 
+              console.log(this.title);
+            }
+          }) */
+          title: "2"
         },
         {
           id: "2",
           title: "2"
         }
-      ];
+      ]; 
     }
 
     ngOnInit() {
