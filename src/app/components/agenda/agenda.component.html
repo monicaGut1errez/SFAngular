@@ -1,6 +1,6 @@
 
 <mat-toolbar>
-    <button mat-raised-button>SALIR</button>
+    <button mat-raised-button (click)="salir()">SALIR</button>
 
    <mat-form-field appearance="outline">
         <mat-chip-list class="chip-list">
@@ -10,12 +10,16 @@
         </mat-chip-list>
     </mat-form-field>
 
+    <h1>{{lblinfo_Expediente1}}</h1>
+
     <span class="flexExpand"></span>
 
-    <button mat-raised-button (click)="openDialog()">AGENDAR</button>
+    <button mat-raised-button *ngIf="this.isButtonVisible" (click)="openDialog()">AGENDAR</button>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field *ngIf="this.cmbTipoAgenda" appearance="fill">
+        <!-- <mat-select *ngIf="this.cmbTipoAgenda"> -->
         <mat-select>
+
           <mat-option ng-model = "toa" *ngFor="let tipoAgenda of tiposAgenda" [value]="tipoAgenda.value">
             {{tipoAgenda.viewValue}}
           </mat-option>

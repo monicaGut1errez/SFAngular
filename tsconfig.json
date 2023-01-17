@@ -9,6 +9,7 @@
     "noImplicitOverride": true,
     "noPropertyAccessFromIndexSignature": true,
     "noImplicitReturns": true,
+    "noImplicitAny": false,
     "noFallthroughCasesInSwitch": true,
     "sourceMap": true,
     "declaration": false,
@@ -23,7 +24,7 @@
       "dom"
     ],
     "strictPropertyInitialization":false,
-    "noImplicitAny": false
+    "typeRoots": ["./src/types", "./types"]
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

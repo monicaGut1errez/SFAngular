@@ -32,6 +32,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 //Services
 import { AgendaService } from '././services/agenda/agenda.service';
 import { ImprimirReporteComponent } from './components/imprimir-reporte/imprimir-reporte.component';
+import { IndiceComponent } from './components/indice/indice.component';
 //import { DatosAudienciaComponent } from './components/datos-audiencia/datos-audiencia.component';
 
 FullCalendarModule.registerPlugins([ 
@@ -50,6 +51,7 @@ FullCalendarModule.registerPlugins([
   declarations: [
     AppComponent,
     ImprimirReporteComponent,
+    IndiceComponent,
     //DatosAudienciaComponent,
     //CustomTooltipColoresDirective,
   ],

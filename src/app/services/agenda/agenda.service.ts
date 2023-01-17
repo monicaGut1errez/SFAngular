@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { ServerLocal } from 'src/environments/environment'
+import { Server } from 'src/environments/environment'
 import { DateSelectionModelChange } from '@angular/material/datepicker';
 import { SELECT_ITEM_HEIGHT_EM } from '@angular/material/select/select';
 
@@ -45,9 +46,23 @@ export class AgendaService {
     return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarTiposSalasConciliador',HTTPOPTIONS);
   }
 
-  ConsultarTiposSalas(): Observable<any>{
+  /* ConsultarTiposSalas(): Observable<any>{
     return this.http.get(ServerLocal + this.strApi + '/ConsultarTiposSalas',HTTPOPTIONS);
+  } */
+
+  // Metodos post 
+
+  ConsultarTiposSalas(ct : any): Observable<any>{
+    return this.http.get(ServerLocal + this.strApi + '/ConsultarTiposSalas', ct);
   }
+
+  ConsultarFechasInhabiles(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){
+    this.http.post(ServerLocal + this.strApi +'/ConsultarFechasInhabiles/', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
+      console.log(data);
+    });
+  }
+
+  //
 
   ConsultarAuxiliaresAudienciaLibres(){
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', HTTPOPTIONS);
@@ -69,7 +84,7 @@ export class AgendaService {
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaAtencionApoyo', HTTPOPTIONS);
   }
 
-  ConsultarFechasInhabiles(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){
+  ConsultarFechasInhabilesgeet(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){
     this.http.get(ServerLocal + this.strApi +'/ConsultarFechasInhabiles/', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
       console.log(data);
     });

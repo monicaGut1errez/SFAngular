@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-
+import { IndiceComponent } from '../indice/indice.component';
 //Services
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
 
@@ -12,7 +12,7 @@ import { AgendaService } from 'src/app/services/agenda/agenda.service';
 export class DatosAudienciaComponent implements OnInit {
   detalleAudiencia: any;
 
-  constructor(public agendaService: AgendaService,public dialogRef: MatDialogRef<DatosAudienciaComponent>) { }
+  constructor(public agendaService: AgendaService,public dialogRef: MatDialogRef<DatosAudienciaComponent>, public dialog: MatDialog) { }
 
   ngOnInit(): void {
     this.agendaService.ConsultarDetalleAudiencia().subscribe(data => {
@@ -23,5 +23,9 @@ export class DatosAudienciaComponent implements OnInit {
 
   cancelar() {
     this.dialogRef.close();
+  }
+  showIndice(){
+      const dialogRef = this.dialog.open(IndiceComponent, {width: '1000px'});
+      this.cancelar();
   }
 }

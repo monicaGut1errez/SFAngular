@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent, CalendarApi } from '@fullcalendar/angular';
 import { INITIAL_EVENTS,createEventId }  from 'src/app/event-utils';
@@ -9,8 +9,9 @@ import { MatTable } from '@angular/material/table';
 import { MatTableDataSource } from '@angular/material/table';
 import { TooltipComponent } from '@angular/material/tooltip';
 import {FormControl, FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 
-
+//Components 
 import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
 import { AgendarComponent } from 'src/app/components/agendar/agendar.component';
 import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
@@ -24,6 +25,20 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 //Models 
 import { TipoSala } from 'src/app/Models/models';
+import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
+
+/* interface data{
+	IdJuez: string;
+	IdExpediente: string;
+	IdAudiencia: string;
+	Complemento: string;
+  Informacion: string;
+}
+
+let informacion : data; 
+ */
+
+var X = "";
 
 interface TipoAgenda {
   value: string;
@@ -36,6 +51,8 @@ export interface PeriodicElement {
   weight: number;
   symbol: string;
 }
+
+
 
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -50,12 +67,29 @@ const ELEMENT_DATA: PeriodicElement[] = [
   {position: 10, name: 'Neon', weight: 20.1797, symbol: 'Ne'},
 ];
 
+
 @Component({
   selector: 'app-agenda',
   templateUrl: './agenda.component.html',
   styleUrls: ['./agenda.component.css'],
 })
+
 export class AgendaComponent {
+  public isButtonVisible = false;
+  public cmbTipoAgenda = false;
+  public lblInfoGen = false; 
+
+  lblinfo_Expediente1: any;
+  salaN: any; 
+
+  sala: any; 
+
+  centroTrabajo: string | null; 
+  privilegio: string | null;
+  vista: string | null; 
+  origen: string | null;
+  
+  audiencia: string | null; 
 
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -64,11 +98,11 @@ export class AgendaComponent {
   serializedDate = new FormControl(new Date().toISOString());
 
   detalleAudiencia: any;
-  tiposSalas: any;
-  id : any; 
-  title: any; 
+  //tiposSalas: any;
+  //id : any; 
+  //title: any; 
   eventos: any; 
-  TiposSalasArray: TipoSala[];
+  //TiposSalasArray: TipoSala[];
   /* constructor() { }
 
   ngOnInit(): void {
@@ -77,10 +111,10 @@ export class AgendaComponent {
   dataSource = ELEMENT_DATA;
 
   tooltipComponent = TooltipColoresComponent;
- 
+
   tiposAgenda: TipoAgenda[] = [
-    {value: '0', viewValue: 'GENERAL'},
-    {value: '1', viewValue: 'CONCILIADOR'}
+    /* {value: '1', viewValue: 'GENERAL'},
+    {value: '2', viewValue: 'CONCILIADOR'} */
     ];
 
   Events = [];
@@ -125,7 +159,7 @@ export class AgendaComponent {
     //eventRender: function(){},
     //schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
     schedulerLicenseKey: '0720429164-fcs-1668012642',
-    resources: this.getResources(),
+    resources: this.getResources(this),
 
     /* resources: [
       { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
@@ -140,20 +174,20 @@ export class AgendaComponent {
       {
         id: '1',
         resourceId: '1',
-        start: '2022-10-25 10:00:00',
-        end: '2022-10-25 12:00:00',
+        start: '2023-01-02 10:00:00',
+        end: '2023-01-02 12:00:00',
         title: 'Prueba1', 
       }, {
         id: '2',
         resourceId: '2',
-        start: '2022-10-28 11:00:00',
-        end: '2022-10-28 14:30:00',
+        start: '2023-01-05 11:00:00',
+        end: '2023-01-05 14:30:00',
         title: 'Prueba2'
       }, {
         id: '3',
         resourceId: '2',
-        start: '2022-10-03 08:30:00',
-        end: '2022-10-03 12:00:00',
+        start: '2023-01-09 08:30:00',
+        end: '2023-01-09 12:00:00',
         title: 'Prueba3'
       }
     ], 
@@ -295,7 +329,7 @@ export class AgendaComponent {
     }, 2500);
          
     }  */
-    constructor(public agendaService: AgendaService, public dialog: MatDialog) {
+    constructor(private route: ActivatedRoute, public agendaService: AgendaService, public dialog: MatDialog) {
       //this.inicializarAgenda();
       //this.loadResource(); 
      }
@@ -305,6 +339,11 @@ export class AgendaComponent {
         width: '550px',
         //data: {name: this.name, animal: this.animal}
       });
+    }
+
+    salir(): void{
+      let message = "Saliendo";
+      window.parent.postMessage(message, "*");
     }
 
     openToolTipInfo(clickInfo: EventClickArg): void {
@@ -319,7 +358,7 @@ export class AgendaComponent {
       console.log(clickInfo.event.title)
     }
 
-    loadResource(): void {
+    /* loadResource(): void {
         this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
         this.getResources();
@@ -327,25 +366,67 @@ export class AgendaComponent {
         console.log(this.tiposSalas);
       })
       
-    }
+    } */
 
-    getResources(): any[] {
+    getResources(sala): any[] {
+      console.log(sala);
+      /* let id;
+      //let sala; 
+      let title;
+      let tiposSalas;
+      let TiposSalasArray = [TipoSala];
+      //id = tiposSalas.id; 
+     this.agendaService.ConsultarTiposSalas().subscribe(data => {
+      for (let d of data){
+        var idSala = d.idSala;
+        var salaNombre = d.salaNombre;
+        var result = ObtenerTipoSala(idSala, salaNombre);
+        //console.log(idSala, salaNombre);
+      } */
+      //console.log(data);
+        /* tiposSalas = data;
+        for (let sala of tiposSalas){
+          
+          id = sala.idSala, 
+          title = sala.salaNombre
 
-      this.agendaService.ConsultarTiposSalas().subscribe(data => {
-        this.tiposSalas = data;
-        //console.log(this.tiposSalas);
+        } *///30/11/2022
 
-        this.tiposSalas.forEach(element  => {
-          this.TiposSalasArray.push(
+       /*  let TiposSalasArray = [TipoSala]; */
+        
+        //console.log (TiposSalasArray);
+        //console.log(tipoSala);
+        //this.tiposSalas = data;
+        //console.log(tiposSalas);
+        /* tiposSalas.forEach(element => {
+          TiposSalasArray.push(
+            id = element.idSala,
+            title = element.salaNombre
+          )
+          }); */
+
+          //id= element.idSala, 
+          //title = element.salaNombre
+          
+          //this.TiposSalasArray.push()
+        /*this.tiposSalas.forEach(element  => {
+          /*this.TiposSalasArray.push(
             
           )
           /* this.TiposSalasArray.push({
             IdSala: element.idSala,
             SalaNombre: element.salaNombre
-          }) */
-        });
-        //return this.tiposSalas;
-      })
+          })--
+        });*/
+        //return tiposSalas;
+      //}) // 30112022
+      /* const ObtenerTipoSala = (idSala, salaNombre) =>{ 
+        //console.log(idSala, salaNombre)
+        sala = salaNombre; 
+        var recursoNombre = this.getResources(sala)
+        console.log(sala);
+      } */
+      //console.log(id)
       /*this.agendaService.ConsultarTiposSalas().subscribe(data => {
         this.tiposSalas = data;
         this.tiposSalas = data;
@@ -378,8 +459,7 @@ export class AgendaComponent {
       } */
       //return tipoSala;
       return [
-        
-        {
+        {     
           /* id: this.agendaService.ConsultarTiposSalas().subscribe(data => {
             this.tiposSalas = data;
             for (let tipoSala of this.tiposSalas){
@@ -397,32 +477,131 @@ export class AgendaComponent {
               console.log(this.title);
             }
           }) */
-          title: "2"
+          title: "1"
         },
         {
           id: "2",
           title: "2"
-        }
+        } 
       ]; 
     }
 
     ngOnInit() {
-      const centroTrabajo = "142190401";
-      const fechaInicio = "2022-01-01T15:11:34.254Z";
-      const fechaFin= "2022-10-24T15:11:34.254Z";
+      this.centroTrabajo = this.route.snapshot.paramMap.get("centroTrabajo");
+      this.privilegio = this.route.snapshot.paramMap.get("privilegio");
+      this.vista = this.route.snapshot.paramMap.get("vista");
+      this.origen = this.route.snapshot.paramMap.get("origen");
+      this.audiencia = ""; 
+      //let encoded: string = btoa("Informativa");
+      //console.log(encoded);
+
+      this.inicializarAgenda();
       //this.service.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
       //this.agendaService.getUsers();
     }
 
     inicializarAgenda(): void {
+      //console.log(parent, "Este es parent");
+      //console.log(parent.location, "Este es parent")
+      let ct: string = atob(this.centroTrabajo || '{}');
+      //console.log(btoa("102")); // OTQ=
+      //console.log(btoa("conciliador")); // Y29uY2lsaWFkb3I=
+      //console.log(ct)
+
+      let priv: string = atob(this.privilegio || '{}');
+      //console.log(priv);
+
+      let vis: string = atob(this.vista || '{}');
+      //console.log(vis);
+
+      let ori: string = atob(this.origen || '{}');
+      //console.log(ori);
+
+      let aud: string = (this.audiencia || '{}');
+      
+      if (priv == "95" || priv == "100" || priv == "101" || priv == "301"){
+        this.tiposAgenda = [
+          {value: '3', viewValue: 'PERSONAL'},
+          {value: '4', viewValue: 'GENERAL'}
+          ];
+      }else{
+        this.tiposAgenda = [
+          {value: '1', viewValue: 'GENERAL'},
+          {value: '2', viewValue: 'CONCILIADOR'}
+          ];
+      }
+      if (vis == "Informativa" && (priv == "94" || priv == "96" || priv == "98" || priv == "100" || priv == "301" || priv == "95" || priv == "101")){
+        //console.log ("Entra aquí");
+        this.cmbTipoAgenda = true
+      }
+      //Mostrar btn aggendar
+      if (vis == "Informativa" && priv =="94"){
+        this.isButtonVisible = true; 
+      }
+
+      window.addEventListener('message', function(e){
+        var origin = e.origin;
+        var data = e.data;
+        
+        // P R O D U C C I O N 
+        if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx')
+        return;
+        if (data !== null){
+          this.lblInfoGen = true; 
+          var informacion = JSON.parse(data);
+          var info_Expediente = informacion.Informacion;
+          var result = obtenerInfoPendiente(info_Expediente);
+          // M O S T R A R  L E Y E N D A  C O N C I L I A D O R 
+         /* var aud = informacion.IdentificadorAudiencia;
+          var result2 = obtenerCita(aud) */
+        }
+        // P R O D U C C I O N  
+      },false);
+
+      const obtenerInfoPendiente = (info_Expediente) =>{
+        this.lblinfo_Expediente1 = info_Expediente; 
+        //console.log(this.lblinfo_Expediente1)
+      }
+      const obtenerCita = (aud) =>{
+        
+      } 
+      //console.log(aud);
+
+      if (vis == "conciliador"){
+        console.log("Es conciliador");
+        this.lblinfo_Expediente1 = "LA AUDIENCIA INICIA: 10:15 AM"
+        //var strCita = this.obtenerCita(aud);
+      }
+      
+      // P R U E B A  R E C U R S O S
+      /* this.agendaService.ConsultarTiposSalas(ct).subscribe(data => {
+        ct = ct; 
+        for (let d of data){
+          var idSala = d.idSala;
+          var salaNombre = d.salaNombre;
+          var result = ObtenerTipoSala(idSala,salaNombre)
+        }
+      }) */
+
+      const ObtenerTipoSala = (idSala, salaNombre) =>{ 
+        //console.log(idSala, salaNombre)
+        this.sala = salaNombre; 
+        //var recursoNombre = this.getResources(this.sala)
+        //console.log(this.sala);
+      }
+
+      //console.log(lblinfo_Expediente);
+
+      //console.log(this.lblinfo_Expediente);
       /*const centroTrabajo = "142190401";
       const fechaInicio = "2022-01-01T15:11:34.254Z";
       const fechaFin= "2022-10-24T15:11:34.254Z";*/
       this.agendaService.ConsultarFechasInhabiles();
-      this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
+      /*this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
         this.eventos = data; 
         console.log(this.eventos);
       });
+      
       this.agendaService.ConsultarAgendaAuxiliaresAudiencia().subscribe(data => {
         this.eventos = data; 
         console.log(this.eventos);
@@ -474,8 +653,6 @@ export class AgendaComponent {
       this.agendaService.ConsultarIndiceExpediente().subscribe(data => {
         this.eventos = data; 
         console.log(this.eventos);
-      })
+      })*/
     }
-
-    
 }

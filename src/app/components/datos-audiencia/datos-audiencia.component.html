@@ -38,5 +38,34 @@
     <tr>
         <th>Observaciones: </th>
         <td>{{ detalleAudiencia.resumenAudiencia | uppercase}}</td>
-     </tr>
+    </tr>
+    <tr style="display:none;">
+      <th>Conciliador:</th>
+      <td>{{ detalleAudiencia.conciliador | uppercase}}</td>
+    </tr>
+    <tr style="display:none;">
+      <th>Sala Conciliador:</th>
+      <td>{{detalleAudiencia}}</td>
+    </tr>
+    <th style="display:none;">Asistencia:</th>
+    <td>{{detalleAudiencia.Asistencia}}</td>
+    <tr style="display:none;">
+      <th>Comentarios Asistencia:</th>
+      <td>{{detalleAudiencia.comentariosAsistenciaConciliacion}}</td>
+    </tr>
+    <tr style="display:none;">
+      <th>Inicio:</th>
+      <td>{{detalleAudiencia.fechaInicioConciliacion}}
+    </tr>
+    <tr style="display:none;">
+      <th>Fin</th>
+      <td>{{detalleAudiencia.fechaFinConciliacion}}</td>
+    </tr>
+    <tr>
+      <th>Indice Expediente: </th>
+      <td>
+        <button mat-raised-button (click)="showIndice()">MOSTRAR INDICE</button>
+
+      </td>
+    </tr>
 </table>
