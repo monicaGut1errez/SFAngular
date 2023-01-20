@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent, CalendarApi } from '@fullcalendar/angular';
+import { CalendarOptions,  DateSelectArg, EventClickArg, EventApi, Calendar, FullCalendarComponent, CalendarApi, diffDates } from '@fullcalendar/angular';
 import { INITIAL_EVENTS,createEventId }  from 'src/app/event-utils';
 import esLocale from '@fullcalendar/core/locales/es';
 import { ThisReceiver } from '@angular/compiler';
@@ -26,17 +26,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 //Models 
 import { TipoSala } from 'src/app/Models/models';
 import { LEADING_TRIVIA_CHARS } from '@angular/compiler/src/render3/view/template';
-
-/* interface data{
-	IdJuez: string;
-	IdExpediente: string;
-	IdAudiencia: string;
-	Complemento: string;
-  Informacion: string;
-}
-
-let informacion : data; 
- */
+import { Cita } from 'src/app/cita';
 
 var X = "";
 
@@ -51,8 +41,6 @@ export interface PeriodicElement {
   weight: number;
   symbol: string;
 }
-
-
 
 const ELEMENT_DATA: PeriodicElement[] = [
   {position: 1, name: 'Hydrogen', weight: 1.0079, symbol: 'H'},
@@ -90,6 +78,8 @@ export class AgendaComponent {
   origen: string | null;
   
   audiencia: string | null; 
+
+  citas : Cita[] = [];
 
   // references the #calendar in the template
   @ViewChild('calendar') calendarComponent!: FullCalendarComponent;
@@ -160,37 +150,30 @@ export class AgendaComponent {
     //schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
     schedulerLicenseKey: '0720429164-fcs-1668012642',
     resources: this.getResources(this),
-
-    /* resources: [
-      { id: '1', title: ' 1 ', eventBackgroundColor: 'rgb(205, 149, 117)'},
-      { id: '2', title: ' 2 ', eventBackgroundColor: 'rgb(135, 169, 107)'}
-    ], */
-    /* resources: {
-      url: 'https://localhost:7036/api/Agenda/ConsultarTiposSalas',
-      method: 'GET'
-    }, */
-    //events:'',
-   events: [
+   events: [this.citas
+    //this.getCitas
+    /*
       {
         id: '1',
         resourceId: '1',
-        start: '2023-01-02 10:00:00',
-        end: '2023-01-02 12:00:00',
-        title: 'Prueba1', 
+        start: '2023-01-19 10:00:00',
+        end: '2023-01-19 12:00:00',
+        backgroundColor: '#E6E321'
+        //title: 'Prueba1', 
       }, {
         id: '2',
         resourceId: '2',
         start: '2023-01-05 11:00:00',
         end: '2023-01-05 14:30:00',
-        title: 'Prueba2'
+        //title: 'Prueba2'
       }, {
         id: '3',
         resourceId: '2',
-        start: '2023-01-09 08:30:00',
-        end: '2023-01-09 12:00:00',
-        title: 'Prueba3'
-      }
-    ], 
+        start: '2023-01-02 08:30:00',
+        end: '2023-01-02 12:00:00',
+        //title: 'Prueba3'
+      }*/
+    ],
     customButtons: {
       custom1: {
         text: 'SALIR',
@@ -272,16 +255,53 @@ export class AgendaComponent {
   }
 
   prev(){
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
     let calendarApi = this.calendarComponent.getApi();
     calendarApi.prev();
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 7;
+    fechaInicio.setDate(fechaInicio.getDate() - dias);
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaFin.getDate() + dias)
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin)
+    /* console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
+
   }
   next(){
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
     let calendarApi = this.calendarComponent.getApi();
     calendarApi.next();
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 7;
+    fechaInicio.setDate(fechaInicio.getDate() - dias);
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaFin.getDate() + dias)
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin)
+   /*  console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
   }
   gotoDate(date: any){
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
     let calendarApi = this.calendarComponent.getApi();
     calendarApi.gotoDate( date.value );
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 7;
+    fechaInicio.setDate(fechaInicio.getDate() - dias);
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaFin.getDate() + dias)
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin)
+    /* console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
   }
   imprimir(){
     const dialogRef = this.dialog.open(ImprimirReporteComponent, {
@@ -347,136 +367,16 @@ export class AgendaComponent {
     }
 
     openToolTipInfo(clickInfo: EventClickArg): void {
-      /* this.agendaService.ConsultarDetalleAudiencia().subscribe(data => {
-        this.detalleAudiencia = data;
-        console.log(this.detalleAudiencia);
-      }); */
-      //this.agendaService.ConsultarDetalleAudiencia()
       const dialogRef = this.dialog.open(DatosAudienciaComponent, {width: '550px'});
       //alert(clickInfo.event.title)
       clickInfo.event.backgroundColor
       console.log(clickInfo.event.title)
     }
 
-    /* loadResource(): void {
-        this.agendaService.ConsultarTiposSalas().subscribe(data => {
-        this.tiposSalas = data;
-        this.getResources();
-        //this.id = this.tiposSalas.idSala;
-        console.log(this.tiposSalas);
-      })
-      
-    } */
-
     getResources(sala): any[] {
-      console.log(sala);
-      /* let id;
-      //let sala; 
-      let title;
-      let tiposSalas;
-      let TiposSalasArray = [TipoSala];
-      //id = tiposSalas.id; 
-     this.agendaService.ConsultarTiposSalas().subscribe(data => {
-      for (let d of data){
-        var idSala = d.idSala;
-        var salaNombre = d.salaNombre;
-        var result = ObtenerTipoSala(idSala, salaNombre);
-        //console.log(idSala, salaNombre);
-      } */
-      //console.log(data);
-        /* tiposSalas = data;
-        for (let sala of tiposSalas){
-          
-          id = sala.idSala, 
-          title = sala.salaNombre
-
-        } *///30/11/2022
-
-       /*  let TiposSalasArray = [TipoSala]; */
-        
-        //console.log (TiposSalasArray);
-        //console.log(tipoSala);
-        //this.tiposSalas = data;
-        //console.log(tiposSalas);
-        /* tiposSalas.forEach(element => {
-          TiposSalasArray.push(
-            id = element.idSala,
-            title = element.salaNombre
-          )
-          }); */
-
-          //id= element.idSala, 
-          //title = element.salaNombre
-          
-          //this.TiposSalasArray.push()
-        /*this.tiposSalas.forEach(element  => {
-          /*this.TiposSalasArray.push(
-            
-          )
-          /* this.TiposSalasArray.push({
-            IdSala: element.idSala,
-            SalaNombre: element.salaNombre
-          })--
-        });*/
-        //return tiposSalas;
-      //}) // 30112022
-      /* const ObtenerTipoSala = (idSala, salaNombre) =>{ 
-        //console.log(idSala, salaNombre)
-        sala = salaNombre; 
-        var recursoNombre = this.getResources(sala)
-        console.log(sala);
-      } */
-      //console.log(id)
-      /*this.agendaService.ConsultarTiposSalas().subscribe(data => {
-        this.tiposSalas = data;
-        this.tiposSalas = data;
-        //console.log(this.tiposSalas) 
-          for (let tipoSala of this.tiposSalas){
-            this.id = tipoSala.idSala; 
-            this.title = tipoSala.salaNombre;
-            console.log(this.id, this.title); 
-
-            return 
-
-          } 
-        })*/
-      //this.title = "2";
-      //console.log(this.title);
-      /* this.agendaService.ConsultarTiposSalas().subscribe(data => {
-      this.tiposSalas = data;
-      console.log(this.tiposSalas) */
-        /* for (let tipoSala of this.tiposSalas){
-          this.id = tipoSala.idSala; 
-          this.title = tipoSala.salaNombre;
-          console.log(this.id, this.title); 
-        }  */
-      //})
-      /* for (let tipoSala of this.tiposSalas){
-        return[{
-          id: tipoSala.idSala, 
-          title: tipoSala.salaNombre
-        }];
-      } */
-      //return tipoSala;
       return [
-        {     
-          /* id: this.agendaService.ConsultarTiposSalas().subscribe(data => {
-            this.tiposSalas = data;
-            for (let tipoSala of this.tiposSalas){
-              this.id = tipoSala.idSala; 
-              //console.log(this.id);
-              return this.id; 
-            }
-          }),  */
-          
+        {              
           id: "1",
-          /* title: this.agendaService.ConsultarTiposSalas().subscribe(data => {
-            this.tiposSalas = data;
-            for (let tipoSala of this.tiposSalas){
-              this.title = tipoSala.salaNombre; 
-              console.log(this.title);
-            }
-          }) */
           title: "1"
         },
         {
@@ -485,25 +385,33 @@ export class AgendaComponent {
         } 
       ]; 
     }
-
+    getCitas(centroTrabajo, fechaInicio, fechaFin): void {
+      this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => this.citas = data
+        /* {
+        console.log(data);
+        data.forEach(d => {
+          const str = String(d.idSala);
+          data  = ({start: d.fechaInicio, end : d.fechaFinal, backgroundColors: d.color});
+          console.log (data);
+          return data;
+        });
+      } */
+      );
+    }
     ngOnInit() {
       this.centroTrabajo = this.route.snapshot.paramMap.get("centroTrabajo");
       this.privilegio = this.route.snapshot.paramMap.get("privilegio");
       this.vista = this.route.snapshot.paramMap.get("vista");
       this.origen = this.route.snapshot.paramMap.get("origen");
       this.audiencia = ""; 
-      //let encoded: string = btoa("Informativa");
-      //console.log(encoded);
-
       this.inicializarAgenda();
-      //this.service.ConsultarFechasInhabiles(centroTrabajo, fechaInicio, fechaFin);
-      //this.agendaService.getUsers();
     }
 
     inicializarAgenda(): void {
       //console.log(parent, "Este es parent");
       //console.log(parent.location, "Este es parent")
       let ct: string = atob(this.centroTrabajo || '{}');
+      
       //console.log(btoa("102")); // OTQ=
       //console.log(btoa("conciliador")); // Y29uY2lsaWFkb3I=
       //console.log(ct)
@@ -596,7 +504,29 @@ export class AgendaComponent {
       /*const centroTrabajo = "142190401";
       const fechaInicio = "2022-01-01T15:11:34.254Z";
       const fechaFin= "2022-10-24T15:11:34.254Z";*/
-      this.agendaService.ConsultarFechasInhabiles();
+      
+      //this.agendaService.ConsultarFechasInhabiles(ct);
+
+      /* this.agendaService.ConsultarFechasInhabiles(ct).subscribe(data => {
+        console.log(data);
+      }) */
+
+      let centroTrabajo = ct; 
+      this.agendaService.ConsultarTiposSalas(centroTrabajo).subscribe(data => {
+        //console.log(data);
+      })
+
+      var fechaInicio: Date = new Date();
+      var dias = 7;
+      fechaInicio.setDate(fechaInicio.getDate() - dias);
+      var fechaFin: Date = new Date();
+      fechaFin.setDate(fechaFin.getDate() + dias)
+
+      this.getCitas(centroTrabajo, fechaInicio, fechaFin)
+
+      //console.log(fechaInicio, fechaFin);
+      
+
       /*this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
         this.eventos = data; 
         console.log(this.eventos);

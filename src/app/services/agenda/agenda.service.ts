@@ -52,14 +52,23 @@ export class AgendaService {
 
   // Metodos post 
 
-  ConsultarTiposSalas(ct : any): Observable<any>{
-    return this.http.get(ServerLocal + this.strApi + '/ConsultarTiposSalas', ct);
+  ConsultarTiposSalas(centroTrabajo):Observable<any>{
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify({centroTrabajo});
+    //console.log(body)
+    return this.http.post(Server+ this.strApi +'/ConsultarTiposSalas/', body,{'headers':headers})
   }
-
-  ConsultarFechasInhabiles(/*centroTrabajo: string, fechaInicio: string, fechaFin: string*/){
-    this.http.post(ServerLocal + this.strApi +'/ConsultarFechasInhabiles/', /* + centroTrabajo + '/' + fechaInicio + '/' + fechaFin, */ HTTPOPTIONS).subscribe(data => {
-      console.log(data);
-    });
+  ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin):Observable<any>{
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify({centroTrabajo,fechaInicio,fechaFin});
+    //console.log(body)
+    return this.http.post(Server + this.strApi + '/ConsultarAgendaSecretariosAcuerdos', body,{'headers':headers});
+  }
+  ConsultarFechasInhabiles(ct):Observable<any>{
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify(ct);
+    //console.log(body)
+    return this.http.post(ServerLocal+ this.strApi +'/ConsultarFechasInhabiles/', body,{'headers':headers})
   }
 
   //
@@ -72,7 +81,7 @@ export class AgendaService {
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaJueces', HTTPOPTIONS);
   }
 
-  ConsultarAgendaSecretariosAcuerdos(){
+  ConsultarAgendaSecretariosAcuerdosget(){
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAgendaSecretariosAcuerdos', HTTPOPTIONS);
   }
 

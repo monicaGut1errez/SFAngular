@@ -7,7 +7,7 @@ export const environment = {
 };
 
 export const ServerLocal = 'https://localhost:7036';
-export const Server =  '';//Donde va a quedar la api;
+export const Server =  'https://plataformacore.poderjudicial-gto.gob.mx/SigoFAMAPI_Publish';//Donde va a quedar la api;
 
 /*
  * For easier debugging in development mode, you can import the following file
