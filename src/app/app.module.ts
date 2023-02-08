@@ -1,7 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { AppRoutingModule } from 'src/app/app-routing.module';
+import { AppRoutingModule } from '../app/app-routing.module';
 import { AppComponent } from './app.component';
  
 // import modules
@@ -19,6 +19,7 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from './demo-material-module';
+import { NgxSpinnerModule } from 'ngx-spinner';
 //import { AgendarComponent } from './components/agendar/agendar.component';
 //import { AgendaComponent } from './components/agenda/agenda.component';
 //import { TooltipColoresComponent } from './components/tooltip-colores/tooltip-colores.component';
@@ -62,6 +63,7 @@ FullCalendarModule.registerPlugins([
     DemoMaterialModule,
     OverlayModule,
     AppRoutingModule, 
+    NgxSpinnerModule,
     //RouterModule
     RouterModule.forRoot([
       {path: 'Agenda', loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)},

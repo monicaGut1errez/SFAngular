@@ -1,31 +1,31 @@
 <table class="mat-elevation-z8">
     <tr>
-      <th>Expediente: </th>
-      <td>{{ detalleAudiencia.tipoExpedienteDescripcion | uppercase }} {{ detalleAudiencia.numeroExpediente | uppercase}}</td>
+        <th>Expediente: </th>
+        <td>{{ detalleAudiencia.tipoExpedienteDescripcion | uppercase }} {{ detalleAudiencia.numeroExpediente | uppercase}}</td>
     </tr>
     <tr>
-      <th>Tipo Audiencia: </th>
-      <td>{{ detalleAudiencia.descripcionTipoAudiencia | uppercase }}</td>
+        <th>Tipo Audiencia: </th>
+        <td>{{ detalleAudiencia.descripcionTipoAudiencia | uppercase }}</td>
     </tr>
     <tr>
-      <th>Tipo de Juicio: </th>
-      <td>{{ detalleAudiencia.descripcionJuicio | uppercase }}</td>
+        <th>Tipo de Juicio: </th>
+        <td>{{ detalleAudiencia.descripcionJuicio | uppercase }}</td>
     </tr>
     <tr>
         <th>Inicio: </th>
-        <td>{{ detalleAudiencia.fechaInicio  | uppercase }}</td>
+        <td>{{ detalleAudiencia.fechaInicio | date: 'dd/MM/yyyy HH:mm' }}</td>
     </tr>
     <tr>
         <th>Fin: </th>
-        <td>{{ detalleAudiencia.fechaFinal | uppercase }}</td>
-      </tr>
+        <td>{{ detalleAudiencia.fechaFinal | date: 'dd/MM/yyyy HH:mm' }}</td>
+    </tr>
     <tr>
         <th>Juzgado: </th>
         <td>{{ detalleAudiencia.nombreJuzgado | uppercase }}</td>
     </tr>
     <tr>
-      <th>Sala: </th>
-      <td>SALA {{ detalleAudiencia.salaNombre | uppercase }} </td>
+        <th>Sala: </th>
+        <td>SALA {{ detalleAudiencia.salaNombre | uppercase }} </td>
     </tr>
     <tr>
         <th>Juez: </th>
@@ -37,35 +37,35 @@
     </tr>
     <tr>
         <th>Observaciones: </th>
-        <td>{{ detalleAudiencia.resumenAudiencia | uppercase}}</td>
+        <td>{{ detalleAudiencia.resumen | uppercase}}</td>
     </tr>
     <tr style="display:none;">
-      <th>Conciliador:</th>
-      <td>{{ detalleAudiencia.conciliador | uppercase}}</td>
+        <th>Conciliador:</th>
+        <td>{{ detalleAudiencia.conciliador | uppercase}}</td>
     </tr>
     <tr style="display:none;">
-      <th>Sala Conciliador:</th>
-      <td>{{detalleAudiencia}}</td>
+        <th>Sala Conciliador:</th>
+        <td>{{detalleAudiencia}}</td>
     </tr>
     <th style="display:none;">Asistencia:</th>
     <td>{{detalleAudiencia.Asistencia}}</td>
     <tr style="display:none;">
-      <th>Comentarios Asistencia:</th>
-      <td>{{detalleAudiencia.comentariosAsistenciaConciliacion}}</td>
+        <th>Comentarios Asistencia:</th>
+        <td>{{detalleAudiencia.comentariosAsistenciaConciliacion}}</td>
     </tr>
     <tr style="display:none;">
-      <th>Inicio:</th>
-      <td>{{detalleAudiencia.fechaInicioConciliacion}}
+        <th>Inicio:</th>
+        <td>{{detalleAudiencia.fechaInicioConciliacion}}
     </tr>
     <tr style="display:none;">
-      <th>Fin</th>
-      <td>{{detalleAudiencia.fechaFinConciliacion}}</td>
+        <th>Fin</th>
+        <td>{{detalleAudiencia.fechaFinConciliacion}}</td>
     </tr>
     <tr>
-      <th>Indice Expediente: </th>
-      <td>
-        <button mat-raised-button (click)="showIndice()">MOSTRAR INDICE</button>
+        <th>Indice Expediente: </th>
+        <td>
+            <button mat-raised-button (click)="showIndice()">MOSTRAR INDICE</button>
 
-      </td>
+        </td>
     </tr>
 </table>

@@ -30,6 +30,7 @@ import { OverlayModule } from '@angular/cdk/overlay';
 import { DatosAudienciaComponent } from 'src/app/components/datos-audiencia/datos-audiencia.component';
 
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 
 
@@ -54,6 +55,7 @@ FullCalendarModule.registerPlugins([
     CustomTooltipColoresDirective,
   ],
   imports: [
+    NgxSpinnerModule,
     CommonModule, 
     AgendaRoutingModule,
     //BrowserModule,

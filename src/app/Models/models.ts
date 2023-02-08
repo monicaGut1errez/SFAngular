@@ -1,5 +1,6 @@
-export class TipoSala {
-    //public IdSala: Number;
-    //public SalaNombre: string;
-    public centroTrabajo: string;
+export class Recurso {
+    public id: string;
+    public title: string;
+    public colorB: string;
+    public noSala: number;
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit,Input, Inject, ViewChild, ElementRef } from '@angular/core';
 import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import { IndiceComponent } from '../indice/indice.component';
 //Services
@@ -10,15 +10,21 @@ import { AgendaService } from 'src/app/services/agenda/agenda.service';
   styleUrls: ['./datos-audiencia.component.css']
 })
 export class DatosAudienciaComponent implements OnInit {
+  
   detalleAudiencia: any;
 
-  constructor(public agendaService: AgendaService,public dialogRef: MatDialogRef<DatosAudienciaComponent>, public dialog: MatDialog) { }
+  public infoCita: any;
+
+  @Input('detallesAudiencia') tooltipContent: any;
+
+  constructor(
+    public agendaService: AgendaService,
+    public dialogRef: MatDialogRef<DatosAudienciaComponent>,
+    public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
-    this.agendaService.ConsultarDetalleAudiencia().subscribe(data => {
-      this.detalleAudiencia = data;
-      console.log(this.detalleAudiencia);
-    });
+    this.detalleAudiencia = this.data;
   }
 
   cancelar() {

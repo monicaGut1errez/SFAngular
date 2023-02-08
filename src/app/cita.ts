@@ -1,11 +1,14 @@
 export interface Cita {
+    resourceId: string;
+    start: Date;
+    end: Date;
+    title: string;
     auxiliarAudiencia: string;
     color: string;
     conciliador: string;
     descripcionJuicio: string;
     descripcionTipoAudiencia: string;
     fechaFinal: Date;
-    start: Date;
     idReservacion: string;
     idSala: string;
     idTipoAudiencia: string;
