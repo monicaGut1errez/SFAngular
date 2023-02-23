@@ -29,7 +29,15 @@ export class ImprimirReporteComponent implements OnInit {
   }
   search(range: any)
   { 
-    //this.agendaService.
+    
+    let obj = {
+        FechaInicial: range.value.startDate,
+        FechaFinal: range.value.startDate
+    }
+
+    this.agendaService.ImprimirAgenda(obj).subscribe((data) =>{
+      console.log(data)
+    });
     console.log(range.value.startDate, range.value.endDate)
   }
 

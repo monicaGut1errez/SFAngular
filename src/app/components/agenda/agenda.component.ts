@@ -22,6 +22,7 @@ import { TooltipColoresComponent } from '../tooltip-colores/tooltip-colores.comp
 import { AgendarComponent } from '../agendar/agendar.component';
 import { DatosAudienciaComponent } from '../datos-audiencia/datos-audiencia.component';
 import { ImprimirReporteComponent } from '../imprimir-reporte/imprimir-reporte.component';
+import { AudienciasSalaComponent } from '../audiencias-sala/audiencias-sala.component';
 
 //Services
 import { AgendaService } from '../../services/agenda/agenda.service';
@@ -71,10 +72,12 @@ export class AgendaComponent {
 
   sala: any;
 
+  // PARAMETROS GET
   centroTrabajo: string | null;
   privilegio: string | null;
   vista: string | null;
   origen: string | null;
+  credencial: string | null;
 
   audiencia: string | null;
 
@@ -707,15 +710,7 @@ export class AgendaComponent {
   serializedDate = new FormControl(new Date().toISOString());
 
   detalleAudiencia: any;
-  //tiposSalas: any;
-  //id : any;
-  //title: any;
   eventos: any;
-  //TiposSalasArray: TipoSala[];
-  /* constructor() { }
-
-  ngOnInit(): void {
-  } */
 
   dataSource = ELEMENT_DATA;
 
@@ -729,16 +724,7 @@ export class AgendaComponent {
   Events = [];
   calendarOptions: CalendarOptions = {
     locale: esLocale,
-    //themeSystem: 'bootstrap5',
     headerToolbar: false,
-    /*headerToolbar: {
-      //: 'prev,next today',
-      left: 'custom1,custom5',
-      right: 'custom2,prev,next,custom3,custom4'
-    },*/
-    /* footerToolbar: {
-      right: 'prev,next'
-    }, */
     allDaySlot: false,
     slotMinTime: '07:00:00',
     slotMaxTime: '20:00:00',
@@ -764,9 +750,6 @@ export class AgendaComponent {
     select: this.handleDateSelect.bind(this),
     eventClick: this.openToolTipInfo.bind(this),//this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
-    //eventMouseEnter: this.openToolTipInfo.bind(this), //Abre el modal al ingrear el mouse en la cita
-    //eventRender: function(){},
-    //schedulerLicenseKey: 'CC-Attribution-NonCommercial-NoDerivatives',
     schedulerLicenseKey: '0720429164-fcs-1668012642',
     resources: this.recuros, //this.getResources(this),
     events: this.citasAgenda,
@@ -778,10 +761,6 @@ export class AgendaComponent {
       custom2: {
         text: 'AGENDAR',
         click: function () {},
-        /*
-        click: function() {
-          alert('clicked custom button 2!');
-        }*/
       },
       custom3: {
         text: 'BUSCAR',
@@ -797,21 +776,13 @@ export class AgendaComponent {
       prev: 'ATRAS',
       next: 'ADELANTE',
     },
-    resourceLabelDidMount: function (arg) {
-        arg.el.style.backgroundColor = arg.resource.extendedProps['colorB']; //'rgb(135, 169, 107)';
-    },
+    resourceLabelDidMount: this.onClickResource.bind(this),
     resourceOrder: 'noSala',
     dayMinWidth: 50,
-    /* businessHours: {
-      daysOfWeek: [1, 2, 3, 4, 5, 6, 7],
-      startTime: '07:00',
-      endTime: '15:00',
-    }, */
     businessHours: {
       startTime: '07:00',
       endTime: '15:00',
     },
-
     height: 'auto',
   };
 
@@ -912,44 +883,13 @@ export class AgendaComponent {
     console.log('Click!', event);
   }
 
-  /*constructor(private httpClient: HttpClient) {
-    this.calendarOptions = {
-      initialView: 'dayGridMonth',
-      //dateClick: this.onDateClick.bind(this),
-      events: this.Events
-    };
-   }*/
-
-  /*onDateClick(res) {
-    alert('Clicked on date : ' + res.dateStr)
-  }*/
-
-  /*ngOnInit(){
-    setTimeout(() => {
-      return this.httpClient.get('http://localhost:8888/event.php')
-        .subscribe(res => {
-            //this.Events.push(res);
-            console.log(this.Events);
-        });
-    }, 2200);
-
-    setTimeout(() => {
-      this.calendarOptions = {
-        initialView: 'dayGridMonth',
-        //dateClick: this.onDateClick.bind(this),
-        events: this.Events
-      };
-    }, 2500);
-         
-    }  */
   constructor(
     private route: ActivatedRoute,
     public agendaService: AgendaService,
     public dialog: MatDialog,
+    public dialog2: MatDialog,
     private spinner: NgxSpinnerService
   ) {
-    //this.inicializarAgenda();
-    //this.loadResource();
   }
 
   openDialog(): void {
@@ -974,7 +914,40 @@ export class AgendaComponent {
     console.log(clickInfo.event.title);
   }
 
+  onClickResource (arg): void {
+    arg.el.style.backgroundColor = arg.resource.extendedProps['colorB']; //'rgb(135, 169, 107)';
+    arg.el.addEventListener("click", this.openDialogSala.bind(this, arg.resource, arg.date));
+  }
   
+  openDialogSala(resource, date:Date): void {
+
+    var filteredDates = resource.getEvents().filter((obj) => {
+            return obj.start?.getDate() == date.getDate();
+          });
+    let params = {
+      title:'Sala ' + resource.title + ', ' + this.formatDate(date),
+      citas: filteredDates
+    }
+    const dialogRef = this.dialog.open(AudienciasSalaComponent, {
+      width: '620px',
+      data: params
+    });
+  }
+
+  formatDate(date: Date) {
+    return (
+      [
+        this.padTo2Digits(date.getDate()),
+        this.padTo2Digits(date.getMonth() + 1),
+        date.getFullYear(),
+      ].join('/')
+    );
+  }
+
+  padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+
   getCitas(centroTrabajo, fechaInicio, fechaFin): void {
     this.citasAgenda = [];
 
@@ -993,6 +966,7 @@ export class AgendaComponent {
               start: d.fechaInicio,
               end: d.fechaFinal,
               resourceId: String(d.idSala),
+
               title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
               backgroundColor: String(d.color),
               extendedProps: d
@@ -1005,11 +979,13 @@ export class AgendaComponent {
         }
       );
   }
+
   ngOnInit() {
     this.centroTrabajo = this.route.snapshot.paramMap.get('centroTrabajo');
     this.privilegio = this.route.snapshot.paramMap.get('privilegio');
     this.vista = this.route.snapshot.paramMap.get('vista');
     this.origen = this.route.snapshot.paramMap.get('origen');
+    this.credencial = this.route.snapshot.paramMap.get('credencial');
     this.audiencia = '';
     this.inicializarAgenda();
   }
@@ -1019,10 +995,6 @@ export class AgendaComponent {
     //console.log(parent.location, "Este es parent")
     let ct: string = atob(this.centroTrabajo || '{}');
 
-    //console.log(btoa("102")); // OTQ=
-    //console.log(btoa("conciliador")); // Y29uY2lsaWFkb3I=
-    //console.log(ct)
-
     let priv: string = atob(this.privilegio || '{}');
     //console.log(priv);
 
@@ -1030,7 +1002,8 @@ export class AgendaComponent {
     //console.log(vis);
 
     let ori: string = atob(this.origen || '{}');
-    //console.log(ori);
+
+    let cred: string = atob(this.credencial || '{}');
 
     let aud: string = this.audiencia || '{}';
 
@@ -1068,9 +1041,12 @@ export class AgendaComponent {
       function (e) {
         var origin = e.origin;
         var data = e.data;
-
+        debugger;
         // P R O D U C C I O N
-        if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx') return;
+        //if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx') return;
+        console.log('entro a angular')
+        console.log(origin);
+        if (origin !== 'http://localhost/') return;
         if (data !== null) {
           this.lblInfoGen = true;
           var informacion = JSON.parse(data);
@@ -1089,8 +1065,6 @@ export class AgendaComponent {
       this.lblinfo_Expediente1 = info_Expediente;
       //console.log(this.lblinfo_Expediente1)
     };
-    const obtenerCita = (aud) => {};
-    //console.log(aud);
 
     if (vis == 'conciliador') {
       console.log('Es conciliador');
@@ -1104,19 +1078,6 @@ export class AgendaComponent {
       //var recursoNombre = this.getResources(this.sala)
       //console.log(this.sala);
     };
-
-    //console.log(lblinfo_Expediente);
-
-    //console.log(this.lblinfo_Expediente);
-    /*const centroTrabajo = "142190401";
-      const fechaInicio = "2022-01-01T15:11:34.254Z";
-      const fechaFin= "2022-10-24T15:11:34.254Z";*/
-
-    //this.agendaService.ConsultarFechasInhabiles(ct);
-
-    /* this.agendaService.ConsultarFechasInhabiles(ct).subscribe(data => {
-        console.log(data);
-      }) */
 
     let centroTrabajo = ct;
     this.agendaService.ConsultarTiposSalas(centroTrabajo).subscribe((data) => {
@@ -1137,6 +1098,17 @@ export class AgendaComponent {
       });
 
       //console.log(data);
+    });
+
+    this.agendaService.ObtenerToken(
+      {
+        CentroTrabajo: ct,
+        IdentificadorCredencial: cred
+      }
+      
+    ).subscribe((resp) => {
+      console.log(resp)
+      localStorage.setItem('jwt', resp.jwt);
     });
 
     var fechaInicio: Date = new Date();

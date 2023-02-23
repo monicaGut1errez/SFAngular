@@ -1,0 +1,9 @@
+<h1>{{objParams.title}}</h1>
+<div *ngFor="let cita of objParams.citas; let i = index" [id]="i">
+    <p><b>Expediente:</b> {{cita.extendedProps.tipoExpedienteDescripcion + ' ' + cita.extendedProps.numeroExpediente}}, <b>Inicio:</b> {{cita.extendedProps.fechaInicio}}, <b>Fin:</b> {{cita.extendedProps.fechaFinal}}</p>
+    <p><b>Audiencia:</b> {{cita.extendedProps.descripcionTipoAudiencia}}</p>
+    <p><b>Juzgado:</b> {{cita.extendedProps.nombreJuzgado}}</p>
+    <p><b>Juez:</b> {{cita.extendedProps.juez}}</p>
+    <p><b>Auxiliar </b>{{cita.extendedProps.auxiliarAudiencia}}</p>
+    <mat-divider></mat-divider>
+</div>

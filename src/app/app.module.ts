@@ -20,12 +20,7 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DemoMaterialModule } from './demo-material-module';
 import { NgxSpinnerModule } from 'ngx-spinner';
-//import { AgendarComponent } from './components/agendar/agendar.component';
-//import { AgendaComponent } from './components/agenda/agenda.component';
-//import { TooltipColoresComponent } from './components/tooltip-colores/tooltip-colores.component';
-//import { CustomTooltipColoresDirective } from './directives/custom-tooltip-colores.directive';
 import { OverlayModule } from '@angular/cdk/overlay';
-//import {MatButtonModule} from '@angular/material/button';
 import {MAT_DATE_LOCALE} from '@angular/material/core';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 
@@ -34,7 +29,7 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { AgendaService } from '././services/agenda/agenda.service';
 import { ImprimirReporteComponent } from './components/imprimir-reporte/imprimir-reporte.component';
 import { IndiceComponent } from './components/indice/indice.component';
-//import { DatosAudienciaComponent } from './components/datos-audiencia/datos-audiencia.component';
+import { AudienciasSalaComponent } from './components/audiencias-sala/audiencias-sala.component';
 
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
@@ -53,8 +48,7 @@ FullCalendarModule.registerPlugins([
     AppComponent,
     ImprimirReporteComponent,
     IndiceComponent,
-    //DatosAudienciaComponent,
-    //CustomTooltipColoresDirective,
+    AudienciasSalaComponent,
   ],
   imports: [
     BrowserModule,
@@ -64,7 +58,6 @@ FullCalendarModule.registerPlugins([
     OverlayModule,
     AppRoutingModule, 
     NgxSpinnerModule,
-    //RouterModule
     RouterModule.forRoot([
       {path: 'Agenda', loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)},
     ]),

@@ -19,6 +19,7 @@ const HTTPOPTIONS = {
 export class AgendaService {
 
   strApi = '/api/Agenda';
+  strApiLogin = '/api/Login';
   strApiAudiencia = '/api/Audiencia';
   strApiConciliador = '/api/AgendaConciliador'; 
   strApiExpediente = '/api/Expediente';
@@ -71,7 +72,24 @@ export class AgendaService {
     return this.http.post(ServerLocal+ this.strApi +'/ConsultarFechasInhabiles/', body,{'headers':headers})
   }
 
-  //
+  ImprimirAgenda(ct):Observable<any>{
+    const headers = { 
+      'content-type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+    }  
+    const body=JSON.stringify(ct);
+    console.log(body)
+    console.log(Server+ this.strApi +'/ConsultarReporteAgendaGeneral');
+    console.log(headers);
+    return this.http.post(Server+ this.strApi +'/ConsultarReporteAgendaGeneral', body,{'headers':headers})
+  }
+  
+  ObtenerToken(ct):Observable<any>{
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify(ct);
+    //console.log(body)
+    return this.http.post(Server+ this.strApiLogin + '/Autenticar', body,{'headers':headers})
+  }
 
   ConsultarAuxiliaresAudienciaLibres(){
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', HTTPOPTIONS);

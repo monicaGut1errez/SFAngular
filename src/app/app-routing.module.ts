@@ -5,7 +5,7 @@ import { AgendaModule } from './components/agenda/agenda.module';
 
 const routes: Routes = [
   { 
-    path: 'Agenda/:centroTrabajo/:privilegio/:vista/:origen',
+    path: 'Agenda/:centroTrabajo/:privilegio/:vista/:origen/:credencial',
     loadChildren: () => import('./components/agenda/agenda.module').then(m => m.AgendaModule)
   },
   {
