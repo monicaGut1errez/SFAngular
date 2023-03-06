@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+import { Component, Inject, OnInit } from '@angular/core';
+import { MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
 import {FormGroup, FormControl} from '@angular/forms';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 //Services
 import { AgendaService } from 'src/app/services/agenda/agenda.service';
@@ -16,9 +17,12 @@ export class ImprimirReporteComponent implements OnInit {
     startDate: new FormControl(),
     endDate: new FormControl(),
   })
-  constructor(public agendaService: AgendaService,  public dialogRef: MatDialogRef<ImprimirReporteComponent>, 
-    //@Inject(MAT_DIALOG_DATA) public data: Articulo
-    ) { }
+  constructor(
+    public agendaService: AgendaService
+    , public dialogRef: MatDialogRef<ImprimirReporteComponent>
+    , private spinner: NgxSpinnerService
+    , @Inject(MAT_DIALOG_DATA) public data: any
+  ) { }
 
   ngOnInit(): void {
 
@@ -34,11 +38,28 @@ export class ImprimirReporteComponent implements OnInit {
         FechaInicial: range.value.startDate,
         FechaFinal: range.value.startDate
     }
+    
+    this.spinner.show();
 
-    this.agendaService.ImprimirAgenda(obj).subscribe((data) =>{
-      console.log(data)
-    });
-    console.log(range.value.startDate, range.value.endDate)
+    if (this.data.privilegio != 94){
+      this.agendaService.ImprimirAgenda(obj).subscribe((data: string) =>{
+        this.dialogRef.close();
+        this.spinner.hide();
+        window.open(data);
+      }, error => {
+        this.spinner.hide();
+        console.log(error);
+      });
+    } else {
+      this.agendaService.ImprimirAgendaSecretarioAcuerdos(obj).subscribe((data: string) =>{
+        this.dialogRef.close();
+        this.spinner.hide();
+        window.open(data);
+      }, error => {
+        this.spinner.hide();
+        console.log(error);
+      });
+    }
   }
 
 

@@ -5,7 +5,7 @@ import { AppRoutingModule } from '../app/app-routing.module';
 import { AppComponent } from './app.component';
  
 // import modules
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
  
 import { FullCalendarModule } from '@fullcalendar/angular';
 import dayGridPlugin from '@fullcalendar/daygrid';
@@ -30,6 +30,7 @@ import { AgendaService } from '././services/agenda/agenda.service';
 import { ImprimirReporteComponent } from './components/imprimir-reporte/imprimir-reporte.component';
 import { IndiceComponent } from './components/indice/indice.component';
 import { AudienciasSalaComponent } from './components/audiencias-sala/audiencias-sala.component';
+import { AuthInterceptor } from './Tools/auth-interceptor';
 
 FullCalendarModule.registerPlugins([ 
   dayGridPlugin,
@@ -65,7 +66,11 @@ FullCalendarModule.registerPlugins([
     FormsModule, 
     ReactiveFormsModule
   ],
-  providers: [AgendaService, {provide: MAT_DATE_LOCALE, useValue: 'es'}],
+  providers: [
+    AgendaService, 
+    {provide: MAT_DATE_LOCALE, useValue: 'es'}
+    , { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }
+  ],
   bootstrap: [AppComponent],
   
 })

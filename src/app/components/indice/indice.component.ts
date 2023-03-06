@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
+import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import {MatSort, Sort} from '@angular/material/sort';
 import {MatTableDataSource} from '@angular/material/table';
 
@@ -45,15 +46,17 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./indice.component.css']
 })
 export class IndiceComponent implements OnInit {
-  dataSource = ELEMENT_DATA;
-  displayedColumns: string[] = ["position", "tipo", "informacion", "resumen", "fecha"];
+  dataSource = this.data.elementos;
+  //dataSource = ELEMENT_DATA;
+  displayedColumns: string[] = ["position", "tipo", "informacion", "fecha"];
 
   expandedRows: { [key: number]: boolean } = {};
 
   expand(element: PeriodicElement) {
     this.expandedRows[element.position] = !this.expandedRows[element.position]
   }
-  constructor() { }
+  constructor(public dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
   }

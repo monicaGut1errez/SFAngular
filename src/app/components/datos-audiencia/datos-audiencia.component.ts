@@ -3,6 +3,7 @@ import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog
 import { IndiceComponent } from '../indice/indice.component';
 //Services
 import { AgendaService } from 'src/app/services/agenda/agenda.service'; 
+import { Overlay } from '@angular/cdk/overlay';
 
 @Component({
   selector: 'app-datos-audiencia',
@@ -21,6 +22,7 @@ export class DatosAudienciaComponent implements OnInit {
     public agendaService: AgendaService,
     public dialogRef: MatDialogRef<DatosAudienciaComponent>,
     public dialog: MatDialog,
+    private overlay:Overlay,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
@@ -31,7 +33,17 @@ export class DatosAudienciaComponent implements OnInit {
     this.dialogRef.close();
   }
   showIndice(){
-      const dialogRef = this.dialog.open(IndiceComponent, {width: '1000px'});
+      this.agendaService.ConsultarIndiceExpediente({identificador: this.data.identificadorExpediente}).subscribe((resp)=> {
+        const scrollStrategy = this.overlay.scrollStrategies.block();
+        const dialogRef = this.dialog.open(IndiceComponent, {
+          width: '1000px',
+          maxHeight: '600px',
+          data: resp,
+          scrollStrategy
+        });
+      }, error => {
+        console.log(error);
+      });
       this.cancelar();
   }
 }

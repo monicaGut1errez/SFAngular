@@ -30,7 +30,6 @@ import { AgendaService } from '../../services/agenda/agenda.service';
 import { Recurso } from '../../Models/models';
 import { Cita } from '../../cita';
 
-var X = '';
 
 interface TipoAgenda {
   value: string;
@@ -788,101 +787,6 @@ export class AgendaComponent {
 
   currentEvents: EventApi[] = [];
 
-  handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
-    const calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect(); // clear date selection
-
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      });
-    }
-  }
-
-  handleEventClick(clickInfo: EventClickArg) {
-    if (
-      confirm(
-        `Are you sure you want to delete the event '${clickInfo.event.title}'`
-      )
-    ) {
-      clickInfo.event.remove();
-    }
-  }
-
-  handleEvents(events: EventApi[]) {
-    this.currentEvents = events;
-  }
-
-  prev() {
-    let ct: string = atob(this.centroTrabajo || '{}');
-    let centroTrabajo = ct;
-    let calendarApi = this.calendarComponent.getApi();
-    calendarApi.prev();
-    var fechaInicio: Date = calendarApi.getDate();
-    var dias = 6;
-    //fechaInicio.setDate(fechaInicio.getDate() - dias);
-    var fechaFin: Date = calendarApi.getDate();
-    fechaFin.setDate(fechaFin.getDate() + dias);
-    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
-    calendarApi.render();
-    /* console.log(fechaInicio, fechaFin);
-     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
-        console.log(data);
-      }) */
-  }
-  next() {
-    let ct: string = atob(this.centroTrabajo || '{}');
-    let centroTrabajo = ct;
-    let calendarApi = this.calendarComponent.getApi();
-    calendarApi.next();
-    var fechaInicio: Date = calendarApi.getDate();
-    var dias = 6;
-    //fechaInicio.setDate(fechaInicio.getDate() - dias);
-    var fechaFin: Date = calendarApi.getDate();
-    fechaFin.setDate(fechaFin.getDate() + dias);
-    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
-    /*  console.log(fechaInicio, fechaFin);
-     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
-        console.log(data);
-      }) */
-  }
-  gotoDate(date: any) {
-    let ct: string = atob(this.centroTrabajo || '{}');
-    let centroTrabajo = ct;
-    let calendarApi = this.calendarComponent.getApi();
-    calendarApi.gotoDate(date.value);
-    var fechaInicio: Date = calendarApi.getDate();
-    var dias = 6;
-    fechaInicio.setDate(fechaInicio.getDate() - (fechaInicio.getDay() - 1));
-    var fechaFin: Date = calendarApi.getDate();
-    fechaFin.setDate(fechaInicio.getDate() + dias);
-    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
-    /* console.log(fechaInicio, fechaFin);
-     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
-        console.log(data);
-      }) */
-  }
-  imprimir() {
-    const dialogRef = this.dialog.open(ImprimirReporteComponent, {
-      width: '550px',
-      //data: {name: this.name, animal: this.animal}
-    });
-  }
-  agendar() {
-    alert('hola!');
-    console.log('Click!');
-  }
-  openModal() {}
-  handleClick(event: Event) {
-    console.log('Click!', event);
-  }
-
   constructor(
     private route: ActivatedRoute,
     public agendaService: AgendaService,
@@ -890,94 +794,6 @@ export class AgendaComponent {
     public dialog2: MatDialog,
     private spinner: NgxSpinnerService
   ) {
-  }
-
-  openDialog(): void {
-    const dialogRef = this.dialog.open(AgendarComponent, {
-      width: '550px',
-      //data: {name: this.name, animal: this.animal}
-    });
-  }
-
-  salir(): void {
-    let message = 'Saliendo';
-    window.parent.postMessage(message, '*');
-  }
-
-  openToolTipInfo(clickInfo: EventClickArg): void {
-    const dialogRef = this.dialog.open(DatosAudienciaComponent, {
-      width: '550px',
-      data: clickInfo.event.extendedProps
-    });
-    //alert(clickInfo.event.title)
-    clickInfo.event.backgroundColor;
-    console.log(clickInfo.event.title);
-  }
-
-  onClickResource (arg): void {
-    arg.el.style.backgroundColor = arg.resource.extendedProps['colorB']; //'rgb(135, 169, 107)';
-    arg.el.addEventListener("click", this.openDialogSala.bind(this, arg.resource, arg.date));
-  }
-  
-  openDialogSala(resource, date:Date): void {
-
-    var filteredDates = resource.getEvents().filter((obj) => {
-            return obj.start?.getDate() == date.getDate();
-          });
-    let params = {
-      title:'Sala ' + resource.title + ', ' + this.formatDate(date),
-      citas: filteredDates
-    }
-    const dialogRef = this.dialog.open(AudienciasSalaComponent, {
-      width: '620px',
-      data: params
-    });
-  }
-
-  formatDate(date: Date) {
-    return (
-      [
-        this.padTo2Digits(date.getDate()),
-        this.padTo2Digits(date.getMonth() + 1),
-        date.getFullYear(),
-      ].join('/')
-    );
-  }
-
-  padTo2Digits(num: number) {
-    return num.toString().padStart(2, '0');
-  }
-
-  getCitas(centroTrabajo, fechaInicio, fechaFin): void {
-    this.citasAgenda = [];
-
-    // fechaInicio = new Date();
-    // fechaFin = new Date();
-    this.spinner.show();
-    this.agendaService
-      .ConsultarAgendaSecretariosAcuerdos(centroTrabajo, fechaInicio, fechaFin)
-      .subscribe(
-        (
-          data //this.citas = data
-        ) => {
-          this.citas = data;
-          data.forEach((d) => {
-            data = {
-              start: d.fechaInicio,
-              end: d.fechaFinal,
-              resourceId: String(d.idSala),
-
-              title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
-              backgroundColor: String(d.color),
-              extendedProps: d
-            };
-            this.citasAgenda.push(data);
-          });
-
-          this.calendarOptions.events = this.citasAgenda;
-          this.spinner.hide();
-        }
-      );
   }
 
   ngOnInit() {
@@ -989,13 +805,14 @@ export class AgendaComponent {
     this.audiencia = '';
     this.inicializarAgenda();
   }
-
+  
   inicializarAgenda(): void {
     //console.log(parent, "Este es parent");
     //console.log(parent.location, "Este es parent")
     let ct: string = atob(this.centroTrabajo || '{}');
 
     let priv: string = atob(this.privilegio || '{}');
+    this.privilegio = priv;
     //console.log(priv);
 
     let vis: string = atob(this.vista || '{}');
@@ -1041,7 +858,7 @@ export class AgendaComponent {
       function (e) {
         var origin = e.origin;
         var data = e.data;
-        debugger;
+        //debugger;
         // P R O D U C C I O N
         //if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx') return;
         console.log('entro a angular')
@@ -1179,4 +996,189 @@ export class AgendaComponent {
         console.log(this.eventos);
       })*/
   }
+
+
+  handleDateSelect(selectInfo: DateSelectArg) {
+    const title = prompt('Please enter a new title for your event');
+    const calendarApi = selectInfo.view.calendar;
+
+    calendarApi.unselect(); // clear date selection
+
+    if (title) {
+      calendarApi.addEvent({
+        id: createEventId(),
+        title,
+        start: selectInfo.startStr,
+        end: selectInfo.endStr,
+        allDay: selectInfo.allDay,
+      });
+    }
+  }
+
+  handleEventClick(clickInfo: EventClickArg) {
+    if (
+      confirm(
+        `Are you sure you want to delete the event '${clickInfo.event.title}'`
+      )
+    ) {
+      clickInfo.event.remove();
+    }
+  }
+
+  handleEvents(events: EventApi[]) {
+    this.currentEvents = events;
+  }
+
+  prev() {
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.prev();
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 6;
+    //fechaInicio.setDate(fechaInicio.getDate() - dias);
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaFin.getDate() + dias);
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
+    calendarApi.render();
+    /* console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
+  }
+  next() {
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.next();
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 6;
+    //fechaInicio.setDate(fechaInicio.getDate() - dias);
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaFin.getDate() + dias);
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
+    /*  console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
+  }
+  gotoDate(date: any) {
+    let ct: string = atob(this.centroTrabajo || '{}');
+    let centroTrabajo = ct;
+    let calendarApi = this.calendarComponent.getApi();
+    calendarApi.gotoDate(date.value);
+    var fechaInicio: Date = calendarApi.getDate();
+    var dias = 6;
+    fechaInicio.setDate(fechaInicio.getDate() - (fechaInicio.getDay() - 1));
+    var fechaFin: Date = calendarApi.getDate();
+    fechaFin.setDate(fechaInicio.getDate() + dias);
+    this.getCitas(centroTrabajo, fechaInicio, fechaFin);
+    /* console.log(fechaInicio, fechaFin);
+     this.agendaService.ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin).subscribe(data => {
+        console.log(data);
+      }) */
+  }
+  imprimir() {
+    const dialogRef = this.dialog.open(ImprimirReporteComponent, {
+      width: '550px',
+      data: {privilegio: this.privilegio}
+    });
+  }
+  agendar() {
+    alert('hola!');
+    console.log('Click!');
+  }
+  openModal() {}
+  handleClick(event: Event) {
+    console.log('Click!', event);
+  }
+
+  openDialog(): void {
+    const dialogRef = this.dialog.open(AgendarComponent, {
+      width: '550px',
+      //data: {name: this.name, animal: this.animal}
+    });
+  }
+
+  salir(): void {
+    let message = 'Saliendo';
+    window.parent.postMessage(message, '*');
+  }
+
+  openToolTipInfo(clickInfo: EventClickArg): void {
+    const dialogRef = this.dialog.open(DatosAudienciaComponent, {
+      width: '550px',
+      data: clickInfo.event.extendedProps
+    });
+    //alert(clickInfo.event.title)
+    clickInfo.event.backgroundColor;
+    console.log(clickInfo.event.title);
+  }
+
+  onClickResource (arg): void {
+    arg.el.style.backgroundColor = arg.resource.extendedProps['colorB']; //'rgb(135, 169, 107)';
+    arg.el.addEventListener("click", this.openDialogSala.bind(this, arg.resource, arg.date));
+  }
+  
+  openDialogSala(resource, date:Date): void {
+
+    var filteredDates = resource.getEvents().filter((obj) => {
+            return obj.start?.getDate() == date.getDate();
+          });
+    let params = {
+      title:'Sala ' + resource.title + ', ' + this.formatDate(date),
+      citas: filteredDates
+    }
+    const dialogRef = this.dialog.open(AudienciasSalaComponent, {
+      width: '620px',
+      data: params
+    });
+  }
+
+  formatDate(date: Date) {
+    return (
+      [
+        this.padTo2Digits(date.getDate()),
+        this.padTo2Digits(date.getMonth() + 1),
+        date.getFullYear(),
+      ].join('/')
+    );
+  }
+
+  padTo2Digits(num: number) {
+    return num.toString().padStart(2, '0');
+  }
+
+  getCitas(centroTrabajo, fechaInicio, fechaFin): void {
+    this.citasAgenda = [];
+
+    // fechaInicio = new Date();
+    // fechaFin = new Date();
+    this.spinner.show();
+    this.agendaService
+      .ConsultarAgendaSecretariosAcuerdos(centroTrabajo, fechaInicio, fechaFin)
+      .subscribe(
+        (
+          data //this.citas = data
+        ) => {
+          this.citas = data;
+          data.forEach((d) => {
+            data = {
+              start: d.fechaInicio,
+              end: d.fechaFinal,
+              resourceId: String(d.idSala),
+
+              title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
+              backgroundColor: String(d.color),
+              extendedProps: d
+            };
+            this.citasAgenda.push(data);
+          });
+
+          this.calendarOptions.events = this.citasAgenda;
+          this.spinner.hide();
+        }
+      );
+  }
+
 }

@@ -54,10 +54,9 @@ export class AgendaService {
   // Metodos post 
 
   ConsultarTiposSalas(centroTrabajo):Observable<any>{
-    const headers = { 'content-type': 'application/json'}  
     const body=JSON.stringify({centroTrabajo});
     //console.log(body)
-    return this.http.post(Server+ this.strApi +'/ConsultarTiposSalas/', body,{'headers':headers})
+    return this.http.post(Server+ this.strApi +'/ConsultarTiposSalas/', body, HTTPOPTIONS)
   }
   ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin):Observable<any>{
     const headers = { 'content-type': 'application/json'}  
@@ -69,19 +68,25 @@ export class AgendaService {
     const headers = { 'content-type': 'application/json'}  
     const body=JSON.stringify(ct);
     //console.log(body)
-    return this.http.post(ServerLocal+ this.strApi +'/ConsultarFechasInhabiles/', body,{'headers':headers})
+    return this.http.post(ServerLocal+ this.strApi +'/ConsultarFechasInhabiles/', body,{'headers':headers},)
   }
 
   ImprimirAgenda(ct):Observable<any>{
     const headers = { 
       'content-type': 'application/json',
-      'Authorization': `Bearer ${localStorage.getItem('jwt')}`
     }  
     const body=JSON.stringify(ct);
-    console.log(body)
-    console.log(Server+ this.strApi +'/ConsultarReporteAgendaGeneral');
-    console.log(headers);
-    return this.http.post(Server+ this.strApi +'/ConsultarReporteAgendaGeneral', body,{'headers':headers})
+    
+    return this.http.post(Server+ this.strApi +'/ConsultarReporteAgendaGeneral', body,{'headers':headers, 'responseType': 'text'});
+  }
+  
+  ImprimirAgendaSecretarioAcuerdos(ct):Observable<any>{
+    const headers = { 
+      'content-type': 'application/json',
+    }  
+    const body=JSON.stringify(ct);
+    
+    return this.http.post(Server+ this.strApi +'/ConsultarAgendaGeneralSecretarioAcuerdos', body,{'headers':headers, 'responseType': 'text'});
   }
   
   ObtenerToken(ct):Observable<any>{
@@ -89,6 +94,11 @@ export class AgendaService {
     const body=JSON.stringify(ct);
     //console.log(body)
     return this.http.post(Server+ this.strApiLogin + '/Autenticar', body,{'headers':headers})
+  }
+
+  ConsultarIndiceExpediente(obj): Observable<any>{
+    const body=JSON.stringify(obj);
+    return this.http.post(Server + this.strApiExpediente + '/ConsultarIndiceExpedienteCronologico',obj, HTTPOPTIONS);
   }
 
   ConsultarAuxiliaresAudienciaLibres(){
@@ -144,8 +154,6 @@ export class AgendaService {
     return this.http.get(ServerLocal + this.strApiAudiencia + '/ConsultarDetalleAudienciaSalaAtencionApoyo', HTTPOPTIONS);
   }
 
-  ConsultarIndiceExpediente(): Observable<any>{
-    return this.http.get(ServerLocal + this.strApiExpediente + '/ConsultarIndiceExpediente', HTTPOPTIONS);
-  }
+  
 
 }
