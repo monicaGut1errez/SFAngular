@@ -101,6 +101,11 @@ export class AgendaService {
     return this.http.post(Server + this.strApiExpediente + '/ConsultarIndiceExpedienteCronologico',obj, HTTPOPTIONS);
   }
 
+  ObtenerDocumentosPromocion(obj): Observable<any>{
+    const body=JSON.stringify(obj);
+    return this.http.post(Server + '/api/Promocion/ConsultarDocumentosPromocion',obj, HTTPOPTIONS);
+  }
+
   ConsultarAuxiliaresAudienciaLibres(){
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', HTTPOPTIONS);
   }
@@ -132,6 +137,7 @@ export class AgendaService {
       console.log(data);
     });
   }
+
 
   //Audiencia API 
   ConsultarDetalleAudiencia(): Observable<any>{

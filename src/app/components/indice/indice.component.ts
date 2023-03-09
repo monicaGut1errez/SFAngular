@@ -1,44 +1,7 @@
 import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import {MatSort, Sort} from '@angular/material/sort';
-import {MatTableDataSource} from '@angular/material/table';
-
-export interface PeriodicElement {
-  position: number;
-  tipo: string;
-  informacion: string;
-  resumen: string;
-  fecha: string; 
-  detalles?: string;
-  children?: any[];
-}
-
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, tipo: "NOTIFICACIÓN", informacion: "NOTIFICACIÓN POR EXHORTO ORIGINADO EN JUZGADO", resumen: "PROMOCIÓN INICIAL ODP", fecha: "26/06/2014", children: [
-    { id: "Folio", text: "1" },
-    { id: "Informacion", text: "Presentado por:DENISSE en Fecha:26/06/2014,Resumen:PROMOCIÓN INICIAL ODP" },
-    { id: "Estatus", text: "Promoción acordada" },
-  ] },
-  /* { position: 2, name: "Helium", weight: 4.0026, symbol: "He" },
-  { position: 3, name: "Lithium", weight: 6.941, symbol: "Li" },
-  {
-    position: 4,
-    name: "Beryllium",
-    weight: 9.0122,
-    symbol: "Be",
-    children: [
-      { id: "4.1", text: "abc 4.1" },
-      { id: "4.2", text: "abc 4.2" },
-      { id: "4.3", text: "abc 4.3" },
-    ]
-  },
-  { position: 5, name: "Boron", weight: 10.811, symbol: "B" },
-  { position: 6, name: "Carbon", weight: 12.0107, symbol: "C" },
-  { position: 7, name: "Nitrogen", weight: 14.0067, symbol: "N" },
-  { position: 8, name: "Oxygen", weight: 15.9994, symbol: "O" },
-  { position: 9, name: "Fluorine", weight: 18.9984, symbol: "F" },
-  { position: 10, name: "Neon", weight: 20.1797, symbol: "Ne" } */
-];
+import { AgendaService } from 'src/app/services/agenda/agenda.service';
+import { Documento } from '../../Models/documento';
 
 @Component({
   selector: 'app-indice',
@@ -46,21 +9,168 @@ const ELEMENT_DATA: PeriodicElement[] = [
   styleUrls: ['./indice.component.css']
 })
 export class IndiceComponent implements OnInit {
-  dataSource = this.data.elementos;
+  //dataSource = this.data.elementos;
+
+  elementos = this.data.elementos.map(
+    (element) => ({
+      ...element,
+      isExpanded: false
+    })
+  );
+
+  dataSource = this.elementos;
+
   //dataSource = ELEMENT_DATA;
   displayedColumns: string[] = ["position", "tipo", "informacion", "fecha"];
 
   expandedRows: { [key: number]: boolean } = {};
 
-  expand(element: PeriodicElement) {
-    this.expandedRows[element.position] = !this.expandedRows[element.position]
-  }
+  documentos: Documento[] = [];
+
+
   constructor(public dialog: MatDialog,
+    public agendaService: AgendaService,
     @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit(): void {
   }
 
-  
 
+  expand(element: any) {
+    //this.expandedRows[element.position] = !this.expandedRows[element.position];
+    this.documentos = [];
+    if (!element.isExpanded){
+
+      element.isExpanded = true;
+
+      if (element.documentos == null){
+        switch (element.tipoAsunto) {
+          case 1: //PROMOCION
+            this.obtenerDocumentosPromocion(element.identificadorElementoIndice);
+            element.documentos = this.documentos;
+            break;
+          case 2: //ACUERDO
+            //this.obtenerDocumentosAcuerdo(element.identificadorElementoIndice);
+            break;
+          case 3: //DILIGENCIA
+            //this.obtenerDocumentosDiligencia(element.identificadorElementoIndice);
+            break;
+          case 4: //NOTIFICACION
+            //this.obtenerDocumentosNotificacion(element.identificadorElementoIndice);
+            break;
+          case 5: //AUDIENCIA
+            //this.obtenerDocumentosAudiencia(element.identificadorElementoIndice);
+            break;
+          default:
+            break;
+        }
+      }
+    } else{
+      element.isExpanded = false;
+    }
+  }
+
+  obtenerDocumentosPromocion(promoID: number){
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": promoID }). subscribe((resp) => {
+      this.documentos.push({
+        nombre:'Acuse ODP',
+        url:resp.acuseODP
+      }, {
+        nombre: 'Acuse juzgado',
+        url: resp.acuseJuzgado
+      });
+
+      resp.digitalizacion.map( (element) => {
+        this.documentos.push( { 
+          nombre: element.split('/')[element.split('/').length - 1],
+          url: element
+         } )
+      } );
+
+    });
+  }
+
+  obtenerDocumentosAcuerdo(cuerdoID: number){
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": cuerdoID }). subscribe((resp) => {
+      this.documentos.push({
+        nombre:'Acuse ODP',
+        url:resp.acuseODP
+      }, {
+        nombre: 'Acuse juzgado',
+        url: resp.acuseJuzgado
+      });
+
+      resp.digitalizacion.map( (element) => {
+        this.documentos.push( { 
+          nombre: element.split('/')[element.split('/').length - 1],
+          url: element
+         } )
+      } );
+
+    });
+  }
+
+  obtenerDocumentosDiligencia(diligenciaID: number){
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": diligenciaID }). subscribe((resp) => {
+      this.documentos.push({
+        nombre:'Acuse ODP',
+        url:resp.acuseODP
+      }, {
+        nombre: 'Acuse juzgado',
+        url: resp.acuseJuzgado
+      });
+
+      resp.digitalizacion.map( (element) => {
+        this.documentos.push( { 
+          nombre: element.split('/')[element.split('/').length - 1],
+          url: element
+         } )
+      } );
+
+    });
+  }
+
+  obtenerDocumentosNotificacion(notiID: number){
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": notiID }). subscribe((resp) => {
+      this.documentos.push({
+        nombre:'Acuse ODP',
+        url:resp.acuseODP
+      }, {
+        nombre: 'Acuse juzgado',
+        url: resp.acuseJuzgado
+      });
+
+      resp.digitalizacion.map( (element) => {
+        this.documentos.push( { 
+          nombre: element.split('/')[element.split('/').length - 1],
+          url: element
+         } )
+      } );
+
+    });
+  }
+
+  obtenerDocumentosAudiencia(notiID: number){
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": notiID }). subscribe((resp) => {
+      this.documentos.push({
+        nombre:'Acuse ODP',
+        url:resp.acuseODP
+      }, {
+        nombre: 'Acuse juzgado',
+        url: resp.acuseJuzgado
+      });
+
+      resp.digitalizacion.map( (element) => {
+        this.documentos.push( { 
+          nombre: element.split('/')[element.split('/').length - 1],
+          url: element
+         } )
+      } );
+
+    });
+  }
+
+  abrirDocumento(url:string){
+    window.open(url);
+  }
 }
