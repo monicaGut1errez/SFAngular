@@ -128,7 +128,16 @@ export class AgendaService {
     return this.http.post(Server + this.strApi + '/Agendar', body,{'headers':headers});
   }
 
+<<<<<<< HEAD
   ConsultarAuxiliaresAudienciaLibres1(){
+=======
+  ObtenerDocumentosPromocion(obj): Observable<any>{
+    const body=JSON.stringify(obj);
+    return this.http.post(Server + '/api/Promocion/ConsultarDocumentosPromocion',obj, HTTPOPTIONS);
+  }
+
+  ConsultarAuxiliaresAudienciaLibres(){
+>>>>>>> 64bf0cccf359e748db0c7206709bdf147816cfd6
     return this.http.get(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', HTTPOPTIONS);
   }
 
@@ -159,6 +168,7 @@ export class AgendaService {
       console.log(data);
     });
   }
+
 
   //Audiencia API 
   ConsultarDetalleAudiencia(): Observable<any>{

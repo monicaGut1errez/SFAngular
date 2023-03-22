@@ -1,28 +1,6 @@
-<h1>Expediente</h1>
+<h1>Expediente {{dataSource[0].tipoExpedienteDescripcion | uppercase }} {{ dataSource[0].numeroExpediente | uppercase}}</h1>
 <h2>Indice</h2>
 <h3>Movimientos del indice</h3>
-<!-- <table class="mat-elevation-z8">
-    <tr>
-        <th>#</th>
-        <th>TIPO</th>
-        <th>INFORMACIÓN</th>
-        <th>RESUMÉN</th>
-        <th>FECHA</th>
-        <th></th>        
-    </tr>
-    <tr>
-        <td>1</td>
-        <td>NOTIFICACIÓN</td>
-        <td>DENNISSE</td>
-        <td>PROMOCION INICIAL ODP</td>
-        <td>26/06/2014</td>
-        <td>
-            <button mat-icon-button aria-label="Example icon button with a vertical three dot icon">
-                <mat-icon>more_vert</mat-icon>
-            </button>
-        </td>
-    </tr>
-</table> -->
 <div>
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
         <!--- Note that these columns can be defined in any order.
@@ -32,7 +10,7 @@
         <ng-container matColumnDef="position">
             <th mat-header-cell *matHeaderCellDef>#</th>
             <td mat-cell *matCellDef="let element">
-                <mat-expansion-panel hideToggle [expanded]="expandedRows[element.position]" (click)="expand(element)">
+                <mat-expansion-panel hideToggle [expanded]="element.isExpanded" (click)="expand(element)">
                     <mat-expansion-panel-header>
                         {{element.position}}
                     </mat-expansion-panel-header>
@@ -46,11 +24,17 @@
             <th mat-header-cell *matHeaderCellDef>TIPO</th>
             <!--<td mat-cell *matCellDef="let element">{{element.tipo}}</td>-->
             <td mat-cell *matCellDef="let element">
-                <mat-expansion-panel hideToggle [expanded]="expandedRows[element.position]" (click)="expand(element)">
+                <mat-expansion-panel hideToggle [expanded]="element.isExpanded" (click)="expand(element)">
                     <mat-expansion-panel-header>
                         {{element.tituloElementoIndice}}
                     </mat-expansion-panel-header>
-                    <div *ngFor="let child of element.children">{{ child.text }}</div>
+                    <mat-list>
+                        <mat-list-item *ngFor="let child of element.documentos">
+                            <mat-icon matListItemIcon (click)="abrirDocumento(child.url)">folder</mat-icon>
+                            <div matListItemTitle>{{child.nombre}}</div>
+                        </mat-list-item>
+                    </mat-list>
+                    <!-- <div *ngFor="let child of element.documentos">{{ child.nombre }}</div> -->
                 </mat-expansion-panel>
             </td>
         </ng-container>
