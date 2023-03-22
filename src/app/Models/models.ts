@@ -4,3 +4,9 @@ export class Recurso {
     public colorB: string;
     public noSala: number;
 }
+export class Auxiliar {
+    public idCredencialBandeja: number;
+    public idDepa: number;
+    public nombre: string;
+    public numeroBandeja: number;
+}

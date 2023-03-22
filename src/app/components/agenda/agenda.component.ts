@@ -23,6 +23,8 @@ import { AgendarComponent } from '../agendar/agendar.component';
 import { DatosAudienciaComponent } from '../datos-audiencia/datos-audiencia.component';
 import { ImprimirReporteComponent } from '../imprimir-reporte/imprimir-reporte.component';
 import { AudienciasSalaComponent } from '../audiencias-sala/audiencias-sala.component';
+import { AgendarPendientesComponent } from '../agendar-pendientes/agendar-pendientes.component';
+import { AgendarPendientesSecConciliadorComponent } from '../agendar-pendientes-sec-conciliador/agendar-pendientes-sec-conciliador.component';
 
 //Services
 import { AgendaService } from '../../services/agenda/agenda.service';
@@ -67,10 +69,18 @@ export class AgendaComponent {
   public lblInfoGen = false;
 
   lblinfo_Expediente1: any;
+  informaciondata: any;
   salaN: any;
-
+  
   sala: any;
 
+  inicioCita: any;
+  finCita: any;
+  ct1: any;
+  aud1: any;
+  cred1: any;
+
+  bConci: number | null; 
   // PARAMETROS GET
   centroTrabajo: string | null;
   privilegio: string | null;
@@ -79,6 +89,7 @@ export class AgendaComponent {
   credencial: string | null;
 
   audiencia: string | null;
+  complemento: number | null; 
 
   citas: Cita[] = [];
   citasAgenda: any[] = [];
@@ -743,7 +754,7 @@ export class AgendaComponent {
     initialEvents: INITIAL_EVENTS,
     weekends: true,
     editable: true,
-    selectable: true,
+    selectable: false,
     selectMirror: true,
     dayMaxEvents: true,
     select: this.handleDateSelect.bind(this),
@@ -858,11 +869,20 @@ export class AgendaComponent {
       function (e) {
         var origin = e.origin;
         var data = e.data;
+        if (data.length === 0){
+        }else{
+          this.lblInfoGen = true;
+          var informacion = JSON.parse(data);
+          var info_Expediente = informacion.Informacion;
+          var result = obtenerInfoPendiente(info_Expediente);
+          var resAudiencia = ObtenerInfo(informacion);
+
+        }
         //debugger;
         // P R O D U C C I O N
         //if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx') return;
-        console.log('entro a angular')
-        console.log(origin);
+        //console.log('entro a angular')
+        //console.log(data);
         if (origin !== 'http://localhost/') return;
         if (data !== null) {
           this.lblInfoGen = true;
@@ -882,11 +902,19 @@ export class AgendaComponent {
       this.lblinfo_Expediente1 = info_Expediente;
       //console.log(this.lblinfo_Expediente1)
     };
-
+    const ObtenerInfo = (informacion) => {
+      this.audiencia = informacion.IdentificadorAudiencia;
+      this.complemento = informacion.Complemento;
+    };
     if (vis == 'conciliador') {
-      console.log('Es conciliador');
+      //console.log('Es conciliador');
       this.lblinfo_Expediente1 = 'LA AUDIENCIA INICIA: 10:15 AM';
       //var strCita = this.obtenerCita(aud);
+    }
+
+    if (vis == 'secretario' && ori == 'Pendientes'){
+      this.calendarOptions.selectable = true;
+
     }
 
     const ObtenerTipoSala = (idSala, salaNombre) => {
@@ -897,6 +925,7 @@ export class AgendaComponent {
     };
 
     let centroTrabajo = ct;
+
     this.agendaService.ConsultarTiposSalas(centroTrabajo).subscribe((data) => {
       var i : number = 0;
       data.forEach((d) => {
@@ -924,7 +953,7 @@ export class AgendaComponent {
       }
       
     ).subscribe((resp) => {
-      console.log(resp)
+      //console.log(resp)
       localStorage.setItem('jwt', resp.jwt);
     });
 
@@ -997,9 +1026,184 @@ export class AgendaComponent {
       })*/
   }
 
+  inicializarAgendaConciliador(banderaConciliador): void {
+    //console.log(parent, "Este es parent");
+    //console.log(parent.location, "Este es parent")
+    let ct: string = atob(this.centroTrabajo || '{}');
 
-  handleDateSelect(selectInfo: DateSelectArg) {
-    const title = prompt('Please enter a new title for your event');
+    let priv: string = atob(this.privilegio || '{}');
+    this.privilegio = priv;
+    //console.log(priv);
+
+    let vis: string = atob(this.vista || '{}');
+    //console.log(vis);
+
+    let ori: string = atob(this.origen || '{}');
+
+    let cred: string = atob(this.credencial || '{}');
+
+    let aud: string = this.audiencia || '{}';
+    
+    let bConci = banderaConciliador;
+    
+    if (priv == '95' || priv == '100' || priv == '101' || priv == '301') {
+      this.tiposAgenda = [
+        { value: '3', viewValue: 'PERSONAL' },
+        { value: '4', viewValue: 'GENERAL' },
+      ];
+    } else {
+      this.tiposAgenda = [
+        { value: '1', viewValue: 'GENERAL' },
+        { value: '2', viewValue: 'CONCILIADOR' },
+      ];
+    }
+    if (
+      vis == 'Informativa' &&
+      (priv == '94' ||
+        priv == '96' ||
+        priv == '98' ||
+        priv == '100' ||
+        priv == '301' ||
+        priv == '95' ||
+        priv == '101')
+    ) {
+      //console.log ("Entra aquí");
+      this.cmbTipoAgenda = true;
+    }
+    //Mostrar btn aggendar
+    if (vis == 'Informativa' && priv == '94') {
+      this.isButtonVisible = true;
+    }
+
+    window.addEventListener(
+      'message',
+      function (e) {
+        var origin = e.origin;
+        var data = e.data;
+        if (data.length === 0){
+        }else{
+          this.lblInfoGen = true;
+          var informacion = JSON.parse(data);
+          var info_Expediente = informacion.Informacion;
+          var result = obtenerInfoPendiente(info_Expediente);
+          var resAudiencia = ObtenerInfo(informacion);
+
+        }
+        //debugger;
+        // P R O D U C C I O N
+        //if (origin !== 'https://plataforma.poderjudicial-gto.gob.mx') return;
+        //console.log('entro a angular')
+        //console.log(data);
+        if (origin !== 'http://localhost/') return;
+        if (data !== null) {
+          this.lblInfoGen = true;
+          var informacion = JSON.parse(data);
+          var info_Expediente = informacion.Informacion;
+          var result = obtenerInfoPendiente(info_Expediente);
+          // M O S T R A R  L E Y E N D A  C O N C I L I A D O R
+          /* var aud = informacion.IdentificadorAudiencia;
+          var result2 = obtenerCita(aud) */
+        }
+        // P R O D U C C I O N
+      },
+      false
+    );
+
+    const obtenerInfoPendiente = (info_Expediente) => {
+      this.lblinfo_Expediente1 = info_Expediente;
+      //console.log(this.lblinfo_Expediente1)
+    };
+    const ObtenerInfo = (informacion) => {
+      this.audiencia = informacion.IdentificadorAudiencia;
+      this.complemento = informacion.Complemento;
+    };
+    if (vis == 'conciliador') {
+      //console.log('Es conciliador');
+      this.lblinfo_Expediente1 = 'LA AUDIENCIA INICIA: 10:15 AM';
+      //var strCita = this.obtenerCita(aud);
+    }
+
+    if (vis == 'secretario' && ori == 'Pendientes'){
+      this.calendarOptions.selectable = true;
+
+    }
+
+    const ObtenerTipoSala = (idSala, salaNombre) => {
+      //console.log(idSala, salaNombre)
+      this.sala = salaNombre;
+      //var recursoNombre = this.getResources(this.sala)
+      //console.log(this.sala);
+    };
+
+    let centroTrabajo = ct;
+    
+    this.agendaService.ConsultarTiposSalasConciliador(centroTrabajo).subscribe((data) => {
+      var i : number = 0;
+      data.forEach((d) => {
+        const str = String(d.idSala);
+
+        this.recuros.push({
+          id: d.idSala,
+          title: d.salaNombre,
+          colorB: this.colores[i].hex,
+          noSala: i
+        });
+        
+        i++;
+
+        return data;
+      });
+
+      //console.log(data);
+    });
+
+    this.agendaService.ObtenerToken(
+      {
+        CentroTrabajo: ct,
+        IdentificadorCredencial: cred
+      }
+      
+    ).subscribe((resp) => {
+      //console.log(resp)
+      localStorage.setItem('jwt', resp.jwt);
+    });
+
+    var fechaInicio: Date = new Date();
+    var dias = 6;
+    fechaInicio.setDate(fechaInicio.getDate() - (fechaInicio.getDay() - 1));
+    var fechaFin: Date = new Date();
+    fechaFin.setDate(fechaInicio.getDate() + dias);
+
+    this.getCitasConciliador(centroTrabajo, fechaInicio, fechaFin,cred);
+
+    
+  }
+
+
+    handleDateSelect(selectInfo: DateSelectArg) {
+    
+    let ct1: string = atob(this.centroTrabajo || '{}');
+    let aud1: string = this.audiencia || '{}';
+    let cred1: string = atob(this.credencial || '{}');
+    let compl: number = this.complemento || 0; 
+    if (this.bConci != 1){
+      const dialogRef = this.dialog.open(AgendarPendientesComponent, {
+        width: '550px',
+        data: {compl, aud1, ct1, inicioCita: selectInfo.startStr,finCita: selectInfo.endStr, sala : selectInfo.resource, cred1}
+      });
+
+    }else{
+      const dialogRef = this.dialog.open(AgendarPendientesSecConciliadorComponent, {
+        width: '550px',
+        data: {compl, aud1, ct1, inicioCita: selectInfo.startStr,finCita: selectInfo.endStr, sala : selectInfo.resource, cred1}
+      });
+    }
+
+    
+
+   
+
+    /*const title = prompt('Please enter a new title for your event');
     const calendarApi = selectInfo.view.calendar;
 
     calendarApi.unselect(); // clear date selection
@@ -1012,7 +1216,7 @@ export class AgendaComponent {
         end: selectInfo.endStr,
         allDay: selectInfo.allDay,
       });
-    }
+    }*/
   }
 
   handleEventClick(clickInfo: EventClickArg) {
@@ -1086,11 +1290,11 @@ export class AgendaComponent {
   }
   agendar() {
     alert('hola!');
-    console.log('Click!');
+    //console.log('Click!');
   }
   openModal() {}
   handleClick(event: Event) {
-    console.log('Click!', event);
+    //console.log('Click!', event);
   }
 
   openDialog(): void {
@@ -1112,7 +1316,7 @@ export class AgendaComponent {
     });
     //alert(clickInfo.event.title)
     clickInfo.event.backgroundColor;
-    console.log(clickInfo.event.title);
+    //console.log(clickInfo.event.title);
   }
 
   onClickResource (arg): void {
@@ -1157,6 +1361,38 @@ export class AgendaComponent {
     this.spinner.show();
     this.agendaService
       .ConsultarAgendaSecretariosAcuerdos(centroTrabajo, fechaInicio, fechaFin)
+      .subscribe(
+        (
+          data //this.citas = data
+        ) => {
+          this.citas = data;
+          data.forEach((d) => {
+            data = {
+              start: d.fechaInicio,
+              end: d.fechaFinal,
+              resourceId: String(d.idSala),
+
+              title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
+              backgroundColor: String(d.color),
+              extendedProps: d
+            };
+            this.citasAgenda.push(data);
+          });
+
+          this.calendarOptions.events = this.citasAgenda;
+          this.spinner.hide();
+        }
+      );
+  }
+
+  getCitasConciliador(centroTrabajo, fechaInicio, fechaFin, cred): void {
+    this.citasAgenda = [];
+
+    // fechaInicio = new Date();
+    // fechaFin = new Date();
+    this.spinner.show();
+    this.agendaService
+      .ConsultarAgendaConciliadoresSecretario(centroTrabajo, fechaInicio, fechaFin, cred)
       .subscribe(
         (
           data //this.citas = data
