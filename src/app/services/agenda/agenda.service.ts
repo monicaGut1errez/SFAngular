@@ -39,8 +39,13 @@ export class AgendaService {
     return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarAgendaConciliadoresSecretario', HTTPOPTIONS);
   }
  */
-  ConsultarConciliadoresLibres(){
-    return this.http.get(ServerLocal + this.strApiConciliador + '/ConsultarConciliadoresLibres', HTTPOPTIONS);
+
+  ConsultarConciliadoresLibres(centroTrabajo,fechaInicio,fechaFin):Observable<any> {
+
+    const headers = { 'content-type': 'application/json'}  
+    const body=JSON.stringify({centroTrabajo,fechaInicio,fechaFin});
+
+    return this.http.post(Server + this.strApiConciliador + '/ConsultarConciliadoresLibres', body,{'headers':headers});
   }
 
   /* ConsultarTiposSalasConciliador(){
@@ -62,7 +67,7 @@ export class AgendaService {
   ConsultarTiposSalasConciliador(centroTrabajo):Observable<any>{
     const body=JSON.stringify({centroTrabajo});
     //console.log(body)
-    return this.http.post(Server+ this.strApi +'/ConsultarTiposSalasConciliador/', body, HTTPOPTIONS)
+    return this.http.post(Server+ this.strApiConciliador +'/ConsultarTiposSalasConciliador/', body, HTTPOPTIONS)
   }
 
   ConsultarAgendaSecretariosAcuerdos(centroTrabajo,fechaInicio,fechaFin):Observable<any>{
@@ -119,7 +124,7 @@ export class AgendaService {
     const headers = { 'content-type': 'application/json'}  
     const body=JSON.stringify({centroTrabajo,fechaInicio,fechaFin});
     //console.log(body)
-    return this.http.post(ServerLocal + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', body,{'headers':headers});
+    return this.http.post(Server + this.strApi + '/ConsultarAuxiliaresAudienciaLibres', body,{'headers':headers});
   }
   Agendar(centroTrabajo,identificadorAudiencia,fechaInicio,fechaFinal,idSala,identificadorAuxiliarAudiencia,identificadorCaptura):Observable<any>{
     const headers = { 'content-type': 'application/json'}  

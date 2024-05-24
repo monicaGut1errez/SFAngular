@@ -17,7 +17,6 @@ import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 
 //Components
-//import { TooltipColoresComponent } from 'src/app/components/tooltip-colores/tooltip-colores.component';
 import { TooltipColoresComponent } from '../tooltip-colores/tooltip-colores.component';
 import { AgendarComponent } from '../agendar/agendar.component';
 import { DatosAudienciaComponent } from '../datos-audiencia/datos-audiencia.component';
@@ -31,7 +30,6 @@ import { AgendaService } from '../../services/agenda/agenda.service';
 //Models
 import { Recurso } from '../../Models/models';
 import { Cita } from '../../cita';
-
 
 interface TipoAgenda {
   value: string;
@@ -71,7 +69,7 @@ export class AgendaComponent {
   lblinfo_Expediente1: any;
   informaciondata: any;
   salaN: any;
-  
+
   sala: any;
 
   inicioCita: any;
@@ -80,7 +78,7 @@ export class AgendaComponent {
   aud1: any;
   cred1: any;
 
-  bConci: number | null; 
+  bConci: number | null;
   // PARAMETROS GET
   centroTrabajo: string | null;
   privilegio: string | null;
@@ -88,14 +86,20 @@ export class AgendaComponent {
   origen: string | null;
   credencial: string | null;
 
+  ct: string = '';
+  priv: string = '';
+  vis: string = '';
+  ori: string = '';
+  cred: string = '';
+
   audiencia: string | null;
-  complemento: number | null; 
+  complemento: number | null;
 
   citas: Cita[] = [];
   citasAgenda: any[] = [];
 
   recuros: Recurso[] = [];
-  colores: any [] = [
+  colores: any[] = [
     {
       hex: '#CD9575',
       name: 'Antique Brass',
@@ -758,7 +762,7 @@ export class AgendaComponent {
     selectMirror: true,
     dayMaxEvents: true,
     select: this.handleDateSelect.bind(this),
-    eventClick: this.openToolTipInfo.bind(this),//this.handleEventClick.bind(this),
+    eventClick: this.openToolTipInfo.bind(this), //this.handleEventClick.bind(this),
     eventsSet: this.handleEvents.bind(this),
     schedulerLicenseKey: '0720429164-fcs-1668012642',
     resources: this.recuros, //this.getResources(this),
@@ -804,10 +808,10 @@ export class AgendaComponent {
     public dialog: MatDialog,
     public dialog2: MatDialog,
     private spinner: NgxSpinnerService
-  ) {
-  }
+  ) {}
 
   ngOnInit() {
+    console.log('ngOnInit :>> ', 'ngOnInit');
     this.centroTrabajo = this.route.snapshot.paramMap.get('centroTrabajo');
     this.privilegio = this.route.snapshot.paramMap.get('privilegio');
     this.vista = this.route.snapshot.paramMap.get('vista');
@@ -816,26 +820,30 @@ export class AgendaComponent {
     this.audiencia = '';
     this.inicializarAgenda();
   }
-  
+
   inicializarAgenda(): void {
     //console.log(parent, "Este es parent");
     //console.log(parent.location, "Este es parent")
-    let ct: string = atob(this.centroTrabajo || '{}');
-
-    let priv: string = atob(this.privilegio || '{}');
-    this.privilegio = priv;
+    this.ct = atob(this.centroTrabajo || '{}');
+    this.priv = atob(this.privilegio || '{}');
+    this.privilegio = this.priv;
     //console.log(priv);
 
-    let vis: string = atob(this.vista || '{}');
+    this.vis = atob(this.vista || '{}');
     //console.log(vis);
 
-    let ori: string = atob(this.origen || '{}');
+    this.ori = atob(this.origen || '{}');
 
-    let cred: string = atob(this.credencial || '{}');
+    this.cred = atob(this.credencial || '{}');
 
     let aud: string = this.audiencia || '{}';
 
-    if (priv == '95' || priv == '100' || priv == '101' || priv == '301') {
+    if (
+      this.priv == '95' ||
+      this.priv == '100' ||
+      this.priv == '101' ||
+      this.priv == '301'
+    ) {
       this.tiposAgenda = [
         { value: '3', viewValue: 'PERSONAL' },
         { value: '4', viewValue: 'GENERAL' },
@@ -847,20 +855,20 @@ export class AgendaComponent {
       ];
     }
     if (
-      vis == 'Informativa' &&
-      (priv == '94' ||
-        priv == '96' ||
-        priv == '98' ||
-        priv == '100' ||
-        priv == '301' ||
-        priv == '95' ||
-        priv == '101')
+      this.vis == 'Informativa' &&
+      (this.priv == '94' ||
+        this.priv == '96' ||
+        this.priv == '98' ||
+        this.priv == '100' ||
+        this.priv == '301' ||
+        this.priv == '95' ||
+        this.priv == '101')
     ) {
       //console.log ("Entra aquí");
       this.cmbTipoAgenda = true;
     }
     //Mostrar btn aggendar
-    if (vis == 'Informativa' && priv == '94') {
+    if (this.vis == 'Informativa' && this.priv == '94') {
       this.isButtonVisible = true;
     }
 
@@ -869,14 +877,13 @@ export class AgendaComponent {
       function (e) {
         var origin = e.origin;
         var data = e.data;
-        if (data.length === 0){
-        }else{
+        if (data.length === 0) {
+        } else {
           this.lblInfoGen = true;
           var informacion = JSON.parse(data);
           var info_Expediente = informacion.Informacion;
           var result = obtenerInfoPendiente(info_Expediente);
           var resAudiencia = ObtenerInfo(informacion);
-
         }
         //debugger;
         // P R O D U C C I O N
@@ -900,21 +907,21 @@ export class AgendaComponent {
 
     const obtenerInfoPendiente = (info_Expediente) => {
       this.lblinfo_Expediente1 = info_Expediente;
+      console.log('this.lblinfo_Expediente1 :>> ', this.lblinfo_Expediente1);
       //console.log(this.lblinfo_Expediente1)
     };
     const ObtenerInfo = (informacion) => {
       this.audiencia = informacion.IdentificadorAudiencia;
       this.complemento = informacion.Complemento;
     };
-    if (vis == 'conciliador') {
+    if (this.vis == 'conciliador') {
       //console.log('Es conciliador');
       this.lblinfo_Expediente1 = 'LA AUDIENCIA INICIA: 10:15 AM';
       //var strCita = this.obtenerCita(aud);
     }
 
-    if (vis == 'secretario' && ori == 'Pendientes'){
+    if (this.vis == 'secretario' && this.ori == 'Pendientes') {
       this.calendarOptions.selectable = true;
-
     }
 
     const ObtenerTipoSala = (idSala, salaNombre) => {
@@ -924,10 +931,10 @@ export class AgendaComponent {
       //console.log(this.sala);
     };
 
-    let centroTrabajo = ct;
+    let centroTrabajo = this.ct;
 
     this.agendaService.ConsultarTiposSalas(centroTrabajo).subscribe((data) => {
-      var i : number = 0;
+      var i: number = 0;
       data.forEach((d) => {
         const str = String(d.idSala);
 
@@ -935,9 +942,9 @@ export class AgendaComponent {
           id: d.idSala,
           title: d.salaNombre,
           colorB: this.colores[i].hex,
-          noSala: i
+          noSala: i,
         });
-        
+
         i++;
 
         return data;
@@ -946,16 +953,15 @@ export class AgendaComponent {
       //console.log(data);
     });
 
-    this.agendaService.ObtenerToken(
-      {
-        CentroTrabajo: ct,
-        IdentificadorCredencial: cred
-      }
-      
-    ).subscribe((resp) => {
-      //console.log(resp)
-      localStorage.setItem('jwt', resp.jwt);
-    });
+    this.agendaService
+      .ObtenerToken({
+        CentroTrabajo: this.ct,
+        IdentificadorCredencial: this.cred,
+      })
+      .subscribe((resp) => {
+        console.log(resp);
+        localStorage.setItem('jwt', resp.jwt);
+      });
 
     var fechaInicio: Date = new Date();
     var dias = 6;
@@ -964,89 +970,26 @@ export class AgendaComponent {
     fechaFin.setDate(fechaInicio.getDate() + dias);
 
     this.getCitas(centroTrabajo, fechaInicio, fechaFin);
-
-    //console.log(fechaInicio, fechaFin);
-
-    /*this.agendaService.ConsultarAgendaAtencionApoyo().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      });
-      
-      this.agendaService.ConsultarAgendaAuxiliaresAudiencia().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarAgendaSecretariosAcuerdos().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarAgendaJueces().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarAuxiliaresAudienciaLibres().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarTiposSalasConciliador().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarConciliadoresLibres().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarAgendaConciliadoresSecretario().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarAgendaConciliadores().subscribe( data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarDetalleAudienciaSalaJuez().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarDetalleAudienciaSalaSecretario().subscribe( data => {
-        this.eventos = data;
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarDetalleAudienciaSalaAuxiliar().subscribe( data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarDetalleAudienciaSalaAtencionApoyo().subscribe( data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })
-      this.agendaService.ConsultarIndiceExpediente().subscribe(data => {
-        this.eventos = data; 
-        console.log(this.eventos);
-      })*/
   }
 
   inicializarAgendaConciliador(banderaConciliador): void {
-    //console.log(parent, "Este es parent");
-    //console.log(parent.location, "Este es parent")
-    let ct: string = atob(this.centroTrabajo || '{}');
-
-    let priv: string = atob(this.privilegio || '{}');
-    this.privilegio = priv;
-    //console.log(priv);
-
-    let vis: string = atob(this.vista || '{}');
-    //console.log(vis);
-
-    let ori: string = atob(this.origen || '{}');
-
-    let cred: string = atob(this.credencial || '{}');
+    debugger;
+    console.log('banderaConciliador :>> ', banderaConciliador);
 
     let aud: string = this.audiencia || '{}';
-    
+
     let bConci = banderaConciliador;
+    console.log('this.priv :>> ', this.priv);
+    console.log('this.vis :>> ', this.vis);
+
     
-    if (priv == '95' || priv == '100' || priv == '101' || priv == '301') {
+
+    if (
+      this.priv == '95' ||
+      this.priv == '100' ||
+      this.priv == '101' ||
+      this.priv == '301'
+    ) {
       this.tiposAgenda = [
         { value: '3', viewValue: 'PERSONAL' },
         { value: '4', viewValue: 'GENERAL' },
@@ -1058,20 +1001,20 @@ export class AgendaComponent {
       ];
     }
     if (
-      vis == 'Informativa' &&
-      (priv == '94' ||
-        priv == '96' ||
-        priv == '98' ||
-        priv == '100' ||
-        priv == '301' ||
-        priv == '95' ||
-        priv == '101')
+      this.vis == 'Informativa' &&
+      (this.priv == '94' ||
+        this.priv == '96' ||
+        this.priv == '98' ||
+        this.priv == '100' ||
+        this.priv == '301' ||
+        this.priv == '95' ||
+        this.priv == '101')
     ) {
       //console.log ("Entra aquí");
       this.cmbTipoAgenda = true;
     }
     //Mostrar btn aggendar
-    if (vis == 'Informativa' && priv == '94') {
+    if (this.vis == 'Informativa' && this.priv == '94') {
       this.isButtonVisible = true;
     }
 
@@ -1080,14 +1023,13 @@ export class AgendaComponent {
       function (e) {
         var origin = e.origin;
         var data = e.data;
-        if (data.length === 0){
-        }else{
+        if (data.length === 0) {
+        } else {
           this.lblInfoGen = true;
           var informacion = JSON.parse(data);
           var info_Expediente = informacion.Informacion;
           var result = obtenerInfoPendiente(info_Expediente);
           var resAudiencia = ObtenerInfo(informacion);
-
         }
         //debugger;
         // P R O D U C C I O N
@@ -1109,6 +1051,7 @@ export class AgendaComponent {
       false
     );
 
+    //console.log('info_Expediente :>> ', info_Expediente);
     const obtenerInfoPendiente = (info_Expediente) => {
       this.lblinfo_Expediente1 = info_Expediente;
       //console.log(this.lblinfo_Expediente1)
@@ -1117,15 +1060,20 @@ export class AgendaComponent {
       this.audiencia = informacion.IdentificadorAudiencia;
       this.complemento = informacion.Complemento;
     };
-    if (vis == 'conciliador') {
+
+    console.log('this.vis :>> ', this.vis);
+    if (this.vis == 'conciliador') {
       //console.log('Es conciliador');
       this.lblinfo_Expediente1 = 'LA AUDIENCIA INICIA: 10:15 AM';
+      console.log(
+        'this.lblinfo_Expediente1 conciliador :>> ',
+        this.lblinfo_Expediente1
+      );
       //var strCita = this.obtenerCita(aud);
     }
 
-    if (vis == 'secretario' && ori == 'Pendientes'){
+    if (this.vis == 'secretario' && this.ori == 'Pendientes') {
       this.calendarOptions.selectable = true;
-
     }
 
     const ObtenerTipoSala = (idSala, salaNombre) => {
@@ -1135,38 +1083,43 @@ export class AgendaComponent {
       //console.log(this.sala);
     };
 
-    let centroTrabajo = ct;
-    
-    this.agendaService.ConsultarTiposSalasConciliador(centroTrabajo).subscribe((data) => {
-      var i : number = 0;
-      data.forEach((d) => {
-        const str = String(d.idSala);
+    let centroTrabajo = this.ct;
 
-        this.recuros.push({
-          id: d.idSala,
-          title: d.salaNombre,
-          colorB: this.colores[i].hex,
-          noSala: i
+    console.log('centroTrabajo :>> ', centroTrabajo);
+    this.agendaService
+      .ConsultarTiposSalasConciliador(centroTrabajo)
+      .subscribe((data) => {
+        this.recuros = [];
+        var i: number = 0;
+        data.forEach((d) => {
+          const str = String(d.idSala);
+
+          this.recuros.push({
+            id: d.idSala,
+            title: d.salaNombre,
+            colorB: this.colores[i].hex,
+            noSala: i,
+          });
+
+          i++;
+          
+          return data;
+
         });
-        
-        i++;
 
-        return data;
+        console.log('this.recuros :>> ', this.recuros);
+        this.calendarOptions.resources = this.recuros;
       });
 
-      //console.log(data);
-    });
-
-    this.agendaService.ObtenerToken(
-      {
-        CentroTrabajo: ct,
-        IdentificadorCredencial: cred
-      }
-      
-    ).subscribe((resp) => {
-      //console.log(resp)
-      localStorage.setItem('jwt', resp.jwt);
-    });
+    this.agendaService
+      .ObtenerToken({
+        CentroTrabajo: this.ct,
+        IdentificadorCredencial: this.cred,
+      })
+      .subscribe((resp) => {
+        //console.log(resp)
+        localStorage.setItem('jwt', resp.jwt);
+      });
 
     var fechaInicio: Date = new Date();
     var dias = 6;
@@ -1174,49 +1127,60 @@ export class AgendaComponent {
     var fechaFin: Date = new Date();
     fechaFin.setDate(fechaInicio.getDate() + dias);
 
-    this.getCitasConciliador(centroTrabajo, fechaInicio, fechaFin,cred);
-
-    
+    this.getCitasConciliador(centroTrabajo, fechaInicio, fechaFin, this.cred);
   }
 
-
-    handleDateSelect(selectInfo: DateSelectArg) {
-    
+  handleDateSelect(selectInfo: DateSelectArg) {
+    console.log('this.priv :>> ', this.priv);
+    console.log('this.ct :>> ', this.ct);
     let ct1: string = atob(this.centroTrabajo || '{}');
     let aud1: string = this.audiencia || '{}';
     let cred1: string = atob(this.credencial || '{}');
-    let compl: number = this.complemento || 0; 
-    if (this.bConci != 1){
+    let complemento: number = this.complemento || 0;
+
+    if (this.bConci != 1) {
       const dialogRef = this.dialog.open(AgendarPendientesComponent, {
         width: '550px',
-        data: {compl, aud1, ct1, inicioCita: selectInfo.startStr,finCita: selectInfo.endStr, sala : selectInfo.resource, cred1}
+        data: {
+          complemento: complemento,
+          aud1,
+          ct1,
+          inicioCita: selectInfo.startStr,
+          finCita: selectInfo.endStr,
+          sala: selectInfo.resource,
+          cred1
+        },
       });
 
-    }else{
-      const dialogRef = this.dialog.open(AgendarPendientesSecConciliadorComponent, {
-        width: '550px',
-        data: {compl, aud1, ct1, inicioCita: selectInfo.startStr,finCita: selectInfo.endStr, sala : selectInfo.resource, cred1}
-      });
+      dialogRef.componentInstance.onCitaCreada.subscribe(
+        (data: any) =>{
+          if (data === 1){
+            this.bConci = data;
+            this.inicializarAgendaConciliador(data)
+          } else{
+            dialogRef.close();
+            this.inicializarAgenda();
+          }
+        }
+      );
+    } else {
+      
+      const dialogRef = this.dialog.open(
+        AgendarPendientesSecConciliadorComponent,
+        {
+          width: '550px',
+          data: {
+            complemento: complemento,
+            aud1,
+            ct1,
+            inicioCita: selectInfo.startStr,
+            finCita: selectInfo.endStr,
+            sala: selectInfo.resource,
+            cred1,
+          },
+        }
+      );
     }
-
-    
-
-   
-
-    /*const title = prompt('Please enter a new title for your event');
-    const calendarApi = selectInfo.view.calendar;
-
-    calendarApi.unselect(); // clear date selection
-
-    if (title) {
-      calendarApi.addEvent({
-        id: createEventId(),
-        title,
-        start: selectInfo.startStr,
-        end: selectInfo.endStr,
-        allDay: selectInfo.allDay,
-      });
-    }*/
   }
 
   handleEventClick(clickInfo: EventClickArg) {
@@ -1285,7 +1249,7 @@ export class AgendaComponent {
   imprimir() {
     const dialogRef = this.dialog.open(ImprimirReporteComponent, {
       width: '550px',
-      data: {privilegio: this.privilegio}
+      data: { privilegio: this.privilegio },
     });
   }
   agendar() {
@@ -1312,41 +1276,41 @@ export class AgendaComponent {
   openToolTipInfo(clickInfo: EventClickArg): void {
     const dialogRef = this.dialog.open(DatosAudienciaComponent, {
       width: '550px',
-      data: clickInfo.event.extendedProps
+      data: clickInfo.event.extendedProps,
     });
     //alert(clickInfo.event.title)
     clickInfo.event.backgroundColor;
     //console.log(clickInfo.event.title);
   }
 
-  onClickResource (arg): void {
+  onClickResource(arg): void {
     arg.el.style.backgroundColor = arg.resource.extendedProps['colorB']; //'rgb(135, 169, 107)';
-    arg.el.addEventListener("click", this.openDialogSala.bind(this, arg.resource, arg.date));
+    arg.el.addEventListener(
+      'click',
+      this.openDialogSala.bind(this, arg.resource, arg.date)
+    );
   }
-  
-  openDialogSala(resource, date:Date): void {
 
+  openDialogSala(resource, date: Date): void {
     var filteredDates = resource.getEvents().filter((obj) => {
-            return obj.start?.getDate() == date.getDate();
-          });
+      return obj.start?.getDate() == date.getDate();
+    });
     let params = {
-      title:'Sala ' + resource.title + ', ' + this.formatDate(date),
-      citas: filteredDates
-    }
+      title: 'Sala ' + resource.title + ', ' + this.formatDate(date),
+      citas: filteredDates,
+    };
     const dialogRef = this.dialog.open(AudienciasSalaComponent, {
       width: '620px',
-      data: params
+      data: params,
     });
   }
 
   formatDate(date: Date) {
-    return (
-      [
-        this.padTo2Digits(date.getDate()),
-        this.padTo2Digits(date.getMonth() + 1),
-        date.getFullYear(),
-      ].join('/')
-    );
+    return [
+      this.padTo2Digits(date.getDate()),
+      this.padTo2Digits(date.getMonth() + 1),
+      date.getFullYear(),
+    ].join('/');
   }
 
   padTo2Digits(num: number) {
@@ -1374,7 +1338,7 @@ export class AgendaComponent {
 
               title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
               backgroundColor: String(d.color),
-              extendedProps: d
+              extendedProps: d,
             };
             this.citasAgenda.push(data);
           });
@@ -1392,7 +1356,12 @@ export class AgendaComponent {
     // fechaFin = new Date();
     this.spinner.show();
     this.agendaService
-      .ConsultarAgendaConciliadoresSecretario(centroTrabajo, fechaInicio, fechaFin, cred)
+      .ConsultarAgendaConciliadoresSecretario(
+        centroTrabajo,
+        fechaInicio,
+        fechaFin,
+        cred
+      )
       .subscribe(
         (
           data //this.citas = data
@@ -1406,15 +1375,15 @@ export class AgendaComponent {
 
               title: d.numeroExpediente + ' ' + d.tipoExpedienteDescripcion,
               backgroundColor: String(d.color),
-              extendedProps: d
+              extendedProps: d,
             };
             this.citasAgenda.push(data);
           });
 
+          console.log('this.citasAgenda Conciliador :>> ', this.citasAgenda);
           this.calendarOptions.events = this.citasAgenda;
           this.spinner.hide();
         }
       );
   }
-
 }

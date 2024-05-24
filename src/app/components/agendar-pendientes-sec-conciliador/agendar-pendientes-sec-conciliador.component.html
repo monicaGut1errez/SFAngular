@@ -1,1 +1,27 @@
-<p>agendar-pendientes-sec-conciliador works!</p>
+<div>
+    <h1 mat-dialog-title align="center">Agregar Nueva Cita Conciliador</h1>
+    <div mat-dialog-content>
+        <div style="display: flex;flex-direction: column; margin:1rem auto; max-width: 600px; padding: 1rem;">
+            <div class="example-container">
+                <h4 mat-dialog-title>INICIO: {{data.inicioCita | date: 'dd/MM/yyyy hh:mm a' }}</h4>
+                <h4 mat-dialog-title>FIN: {{data.finCita | date: 'dd/MM/yyyy hh:mm a' }}</h4>
+                <h4>AUXILIAR</h4>
+                <div>
+                    <mat-form-field appearance="fill">
+                        <mat-label>Seleccione</mat-label>
+                        <mat-select [(value)]="selected">
+                            <mat-option *ngFor="let auxiliar of collection" [value]="auxiliar.idCredencialBandeja">
+                                {{auxiliar.nombre}}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div mat-dialog-actions align="end">
+        <button mat-button (click)="cancelar()">Cancelar</button>
+        <button mat-button cdkFocusInitial (click)="aceptar(selected)">Aceptar</button>
+    </div>
+
+</div>

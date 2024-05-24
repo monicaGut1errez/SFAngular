@@ -71,7 +71,7 @@ export class IndiceComponent implements OnInit {
   }
 
   obtenerDocumentosPromocion(promoID: number){
-    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": promoID }). subscribe((resp) => {
+    this.agendaService.ObtenerDocumentosPromocion( { "identificadorAsunto": promoID }).subscribe((resp) => {
       this.documentos.push({
         nombre:'Acuse ODP',
         url:resp.acuseODP

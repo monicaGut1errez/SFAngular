@@ -10,3 +10,10 @@ export class Auxiliar {
     public nombre: string;
     public numeroBandeja: number;
 }
+
+export class Mediador {
+    public idCredencialBandeja: number;
+    public idDepa: number;
+    public nombre: string;
+    public numeroBandeja: number;
+}

@@ -1,11 +1,9 @@
-import { Component,Inject, OnInit } from '@angular/core';
-import {MatDialog, MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
-import { MatInput } from '@angular/material/input';
-import { AgendaComponent } from '../agenda/agenda.component';
-import { Pipe, PipeTransform } from '@angular/core';
+import { Component,EventEmitter,Inject, OnInit, Output } from '@angular/core';
+import {MatDialogRef, MAT_DIALOG_DATA} from '@angular/material/dialog';
+
 import { AgendaService } from 'src/app/services/agenda/agenda.service';
 import { Auxiliar } from '../../Models/models';
-import { CalendarApi } from '@fullcalendar/core';
+import swal from 'sweetalert2';
 
 @Component({
   selector: 'app-agendar-pendientes',
@@ -14,22 +12,17 @@ import { CalendarApi } from '@fullcalendar/core';
 })
 
 export class AgendarPendientesComponent implements OnInit {
+  @Output() onCitaCreada = new EventEmitter<any>(true);
+
+
   collection: Auxiliar[] = [];
   selected = 0;
-  /* collection = [
-    {
-      idCredencialBandeja: '',
-      idDepa: '',
-      nombre: '',
-      numeroBandeja: ''
-    },
-    ]; */
   selectedOption: any;
-  constructor(public agenda: AgendaComponent, public agendaService: AgendaService, public dialogRef: MatDialogRef<AgendarPendientesComponent>, 
-    @Inject(MAT_DIALOG_DATA) public data: AgendaComponent
+  constructor(
+    public agendaService: AgendaService
+    , public dialogRef: MatDialogRef<AgendarPendientesComponent>
+    , @Inject(MAT_DIALOG_DATA) public data: any
     ) { 
-      console.log(data)
-
       this.agendaService.ConsultarAuxiliaresAudienciaLibres(data.ct1, data.inicioCita, data.finCita).subscribe((res: any) => {
         res.forEach((d) => {
           this.collection.push({
@@ -44,7 +37,7 @@ export class AgendarPendientesComponent implements OnInit {
       }, error => {
         console.log({ error });
       });
-      }
+    }
     
   ngOnInit(): void {
   }
@@ -52,24 +45,50 @@ export class AgendarPendientesComponent implements OnInit {
     this.dialogRef.close();
   }
   aceptar(selected) {
+    debugger;
     let idAux = selected; 
     let salaid = this.data.sala._resource.id; 
     let sala = +salaid;
     let credCaptura = +this.data.cred1;
-    let banderaConciliador = 0
-
-    this.agendaService.Agendar(this.data.ct1, this.data.aud1, this.data.inicioCita, this.data.finCita, sala, idAux, credCaptura).subscribe((res: any) => {
-      if (res === "true"){
-        banderaConciliador = 1;
-        this.dialogRef.close();
-        this.agenda.calendarOptions.selectable = false;
+    let banderaConciliador = 0;
+    
+    // this.agendaService.Agendar(this.data.ct1, this.data.aud1, this.data.inicioCita, this.data.finCita, sala, idAux, credCaptura).subscribe((res: any) => {
+    //   if (res === "true"){
+         banderaConciliador = 1;
+    //     this.dialogRef.close();
+    //     this.agenda.calendarOptions.selectable = false;
+    
         if (this.data.complemento === 1){
-        this.agenda.inicializarAgendaConciliador(banderaConciliador)
-        }
+          //TODO
+          //MANDAR ALERTA DE QUE SI DESEA AGENDAR CONCILIADOR
+          // true ? inicializarAgendaConciliador : CERRAR y llamar InicializarAgendaNormal
+          swal.fire({
+            title: 'Se agendó correctamente, ¿Desea agendar conciliador?',
+            showDenyButton: true,
+            confirmButtonText: 'Agendar',
+            denyButtonText: 'Cancelar',
+          }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+              debugger;
+  
+              this.onCitaCreada.emit(1);
+              this.dialogRef.close();
+
+            } else if (result.isDenied) {
+              this.dialogRef.close();
+              this.onCitaCreada.emit(0);
+            }
+          })
+        //
+    //     }
+      } else {
+        this.dialogRef.close();
+        this.onCitaCreada.emit(0);
       }
-    }, error => {
-      console.log({ error });
-    });
+    // }, error => {
+    //   console.log({ error });
+    // });
   }
 
 
